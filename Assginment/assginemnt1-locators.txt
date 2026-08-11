@@ -1,0 +1,84 @@
+============================================================
+PLAYWRIGHT FILTER - hasText() & has()
+PRACTICE QUESTIONS
+============================================================
+
+
+==================== hasText() ====================
+
+1. Find the product card containing "iPhone 15"
+   and click "Add to Cart".
+
+
+2. Find the product card containing "Samsung Galaxy S24"
+   and click its "Wishlist" button.
+
+
+3. Find the cart item containing "MacBook Air M3"
+   and click "Remove".
+
+
+4. Find the order containing "Sony WH-1000XM5"
+   and click "Track Order".
+
+
+5. Find the product card containing "Sony WH-1000XM5"
+   and click "Add to Cart".
+
+
+
+==================== has() ====================
+
+1. Find the product card that contains an
+   "Add to Cart" button, then click that button.
+
+
+2. Find the product card that contains a wishlist button
+   with aria-label:
+   "Add iPhone 15 to wishlist"
+
+   Then click "Add to Cart".
+
+
+3. Find the cart item that contains a "Remove" button,
+   then click the "Remove" button.
+
+
+4. Find the order that contains a status element
+   with text "Shipped", then click "Track Order".
+
+
+5. Find the product card that contains a "20% OFF" badge,
+   then click "Add to Cart".
+
+
+
+============================================================
+IMPORTANT DIFFERENCE
+============================================================
+
+hasText()
+    -> Checks whether the element contains specific TEXT.
+
+Example:
+
+.filter({ hasText: 'iPhone 15' })
+
+
+has()
+    -> Checks whether the element contains a specific
+       CHILD ELEMENT.
+
+Example:
+
+.filter({
+    has: page.getByRole('button', { name: 'Add to Cart' })
+})
+
+
+Simple way to remember:
+
+hasText = FIND BY TEXT
+
+has     = FIND BY CHILD ELEMENT
+============================================================
