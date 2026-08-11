@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>ShopKart - Playwright Locator Training</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        /* ================= HEADER ================= */
+
+        header {
+            background: #131921;
+            color: white;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 60px;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #ff9900;
+        }
+
+        .search-box {
+            width: 430px;
+            display: flex;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .search-box button {
+            width: 55px;
+            border: none;
+            background: #ff9900;
+            cursor: pointer;
+        }
+
+        .header-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .header-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .cart {
+            background: #ff9900;
+            color: #111 !important;
+            padding: 10px 16px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* ================= NAV ================= */
+
+        .nav {
+            background: #232f3e;
+            color: white;
+            padding: 13px 60px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav span {
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(
+                120deg,
+                #2563eb,
+                #4f46e5
+            );
+
+            color: white;
+            padding: 55px 60px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 17px;
+            opacity: 0.9;
+        }
+
+        /* ================= MAIN ================= */
+
+        main {
+            padding: 40px 60px;
+        }
+
+        .section-header {
+            margin-bottom: 25px;
+        }
+
+        .section-header h2 {
+            font-size: 27px;
+            margin-bottom: 6px;
+        }
+
+        .section-header p {
+            color: #6b7280;
+        }
+
+        /* ================= PRODUCT GRID ================= */
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .product-image {
+            height: 170px;
+            border-radius: 10px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 5px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .best {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .new {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .sale {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .limited {
+            background: #ede9fe;
+            color: #6d28d9;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .rating {
+            margin-bottom: 10px;
+            color: #f59e0b;
+        }
+
+        .rating-count {
+            color: #6b7280;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .price {
+            font-size: 21px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #9ca3af;
+            font-size: 13px;
+            margin-left: 7px;
+        }
+
+        .delivery {
+            font-size: 13px;
+            color: #16a34a;
+            margin-bottom: 15px;
+        }
+
+        .stock {
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .in-stock {
+            color: #16a34a;
+        }
+
+        .low-stock {
+            color: #dc2626;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .product-actions button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .add-cart {
+            border: none;
+            background: #ff9900;
+        }
+
+        .wishlist {
+            border: 1px solid #d1d5db;
+            background: white;
+        }
+
+        /* ================= CART ================= */
+
+        .cart-section {
+            margin-top: 60px;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .cart-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .cart-product {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .cart-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 8px;
+            background: #eef2ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .cart-product h3 {
+            margin-bottom: 5px;
+        }
+
+        .cart-product p {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ================= ORDERS ================= */
+
+        .orders {
+            margin-top: 60px;
+        }
+
+        .order-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .order {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .order-status {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .delivered {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .shipped {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .processing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .order-product {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .order-product-icon {
+            font-size: 30px;
+        }
+
+        .order-product p {
+            margin-top: 5px;
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .order-actions {
+            margin-top: 15px;
+        }
+
+        .order-actions button {
+            padding: 9px 15px;
+            border-radius: 5px;
+            border: 1px solid #d1d5db;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            margin-top: 60px;
+            background: #131921;
+            color: #9ca3af;
+            text-align: center;
+            padding: 30px;
+        }
+
+        @media(max-width: 1000px) {
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .search-box {
+                width: 300px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================================================= -->
+<!-- HEADER -->
+<!-- ================================================= -->
+
+<header>
+
+    <div class="logo">
+        Shop<span>Kart</span>
+    </div>
+
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            placeholder="Search products"
+        >
+
+        <button>
+            🔍
+        </button>
+
+    </div>
+
+
+    <div class="header-links">
+
+        <a href="#">
+            Account
+        </a>
+
+        <a href="#">
+            Orders
+        </a>
+
+        <a href="#" class="cart">
+            🛒 Cart (3)
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- ================================================= -->
+<!-- NAVIGATION -->
+<!-- ================================================= -->
+
+<div class="nav">
+
+    <span>☰ All</span>
+
+    <span>Electronics</span>
+
+    <span>Mobiles</span>
+
+    <span>Computers</span>
+
+    <span>Headphones</span>
+
+    <span>Deals</span>
+
+    <span>New Arrivals</span>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- HERO -->
+<!-- ================================================= -->
+
+<section class="hero">
+
+    <h1>
+        Big Deals. Better Products.
+    </h1>
+
+    <p>
+        Discover the latest electronics with fast delivery
+        and great prices.
+    </p>
+
+</section>
+
+
+<main>
+
+
+<!-- ================================================= -->
+<!-- FEATURED PRODUCTS -->
+<!-- ================================================= -->
+
+<section>
+
+    <div class="section-header">
+
+        <h2>
+            Featured Products
+        </h2>
+
+        <p>
+            Top products selected for you
+        </p>
+
+    </div>
+
+
+    <div class="products">
+
+
+        <!-- ================= PRODUCT 1 ================= -->
+
+        <div class="product-card"
+             data-product-id="P001">
+
+            <div class="product-image">
+                📱
+            </div>
+
+
+            <span class="badge best">
+                Best Seller
+            </span>
+
+
+            <h3>
+                Samsung Galaxy S24
+            </h3>
+
+
+            <div class="rating">
+
+                ★★★★★
+
+                <span class="rating-count">
+                    (1,245)
+                </span>
+
+            </div>
+
+
+            <div class="price">
+
+                ₹60,000
+
+                <span class="old-price">
+                    ₹70,000
+                </span>
+
+            </div>
+
+
+            <div class="delivery">
+                ✓ Free Delivery
+            </div>
+
+
+            <div class="stock in-stock">
+                In Stock
+            </div>
+
+
+            <div class="product-actions">
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+                <button
+                    class="wishlist"
+                    aria-label="Add Samsung Galaxy S24 to wishlist">
+                    ♡
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= PRODUCT 2 ================= -->
+
+        <div class="product-card"
+             data-product-id="P002">
+
+            <div class="product-image">
+                🍎
+            </div>
+
+
+            <span class="badge new">
+                New Arrival
+            </span>
+
+
+            <h3>
+                iPhone 15
+            </h3>
+
+
+            <div class="rating">
+
+                ★★★★☆
+
+                <span class="rating-count">
+                    (982)
+                </span>
+
+            </div>
+
+
+            <div class="price">
+                ₹70,000
+            </div>
+
+
+            <div class="delivery">
+                ✓ Free Delivery
+            </div>
+
+
+            <div class="stock in-stock">
+                In Stock
+            </div>
+
+
+            <div class="product-actions">
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+                <button
+                    class="wishlist"
+                    aria-label="Add iPhone 15 to wishlist">
+                    ♡
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= PRODUCT 3 ================= -->
+
+        <div class="product-card"
+             data-product-id="P003">
+
+            <div class="product-image">
+                💻
+            </div>
+
+
+            <span class="badge sale">
+                20% OFF
+            </span>
+
+
+            <h3>
+                MacBook Air M3
+            </h3>
+
+
+            <div class="rating">
+
+                ★★★★★
+
+                <span class="rating-count">
+                    (756)
+                </span>
+
+            </div>
+
+
+            <div class="price">
+
+                ₹99,000
+
+                <span class="old-price">
+                    ₹1,20,000
+                </span>
+
+            </div>
+
+
+            <div class="delivery">
+                ✓ Express Delivery
+            </div>
+
+
+            <div class="stock low-stock">
+                Only 3 left
+            </div>
+
+
+            <div class="product-actions">
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+                <button
+                    class="wishlist"
+                    aria-label="Add MacBook Air M3 to wishlist">
+                    ♡
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= PRODUCT 4 ================= -->
+
+        <div class="product-card"
+             data-product-id="P004">
+
+            <div class="product-image">
+                🎧
+            </div>
+
+
+            <span class="badge best">
+                Best Seller
+            </span>
+
+
+            <h3>
+                Sony WH-1000XM5
+            </h3>
+
+
+            <div class="rating">
+
+                ★★★★☆
+
+                <span class="rating-count">
+                    (2,341)
+                </span>
+
+            </div>
+
+
+            <div class="price">
+                ₹29,999
+            </div>
+
+
+            <div class="delivery">
+                ✓ Free Delivery
+            </div>
+
+
+            <div class="stock in-stock">
+                In Stock
+            </div>
+
+
+            <div class="product-actions">
+
+                <button class="add-cart">
+                    Add to Cart
+                </button>
+
+                <button
+                    class="wishlist"
+                    aria-label="Add Sony WH-1000XM5 to wishlist">
+                    ♡
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- CART -->
+<!-- ================================================= -->
+
+<section class="cart-section">
+
+    <div class="section-header">
+
+        <h2>
+            Shopping Cart
+        </h2>
+
+        <p>
+            Review your selected products
+        </p>
+
+    </div>
+
+
+    <div class="cart-items">
+
+
+        <!-- CART ITEM 1 -->
+
+        <div class="cart-item"
+             data-cart-id="C001">
+
+            <div class="cart-product">
+
+                <div class="cart-icon">
+                    📱
+                </div>
+
+                <div>
+
+                    <h3>
+                        Samsung Galaxy S24
+                    </h3>
+
+                    <p>
+                        Quantity: 1
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button class="remove-btn">
+                Remove
+            </button>
+
+        </div>
+
+
+        <!-- CART ITEM 2 -->
+
+        <div class="cart-item"
+             data-cart-id="C002">
+
+            <div class="cart-product">
+
+                <div class="cart-icon">
+                    💻
+                </div>
+
+                <div>
+
+                    <h3>
+                        MacBook Air M3
+                    </h3>
+
+                    <p>
+                        Quantity: 1
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button class="remove-btn">
+                Remove
+            </button>
+
+        </div>
+
+
+        <!-- CART ITEM 3 -->
+
+        <div class="cart-item"
+             data-cart-id="C003">
+
+            <div class="cart-product">
+
+                <div class="cart-icon">
+                    🎧
+                </div>
+
+                <div>
+
+                    <h3>
+                        Sony WH-1000XM5
+                    </h3>
+
+                    <p>
+                        Quantity: 2
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button class="remove-btn">
+                Remove
+            </button>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- ================================================= -->
+<!-- ORDERS -->
+<!-- ================================================= -->
+
+<section class="orders">
+
+    <div class="section-header">
+
+        <h2>
+            Recent Orders
+        </h2>
+
+        <p>
+            Track your recent purchases
+        </p>
+
+    </div>
+
+
+    <div class="order-list">
+
+
+        <!-- ORDER 1 -->
+
+        <div class="order"
+             data-order-id="ORD-1001">
+
+            <div class="order-header">
+
+                <strong>
+                    Order #ORD-1001
+                </strong>
+
+
+                <span
+                    class="order-status delivered">
+                    Delivered
+                </span>
+
+            </div>
+
+
+            <div class="order-product">
+
+                <div class="order-product-icon">
+                    📱
+                </div>
+
+                <div>
+
+                    <strong>
+                        Samsung Galaxy S24
+                    </strong>
+
+                    <p>
+                        Delivered on 5 August 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-actions">
+
+                <button
+                    aria-label="Track order ORD-1001">
+                    Track Order
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ORDER 2 -->
+
+        <div class="order"
+             data-order-id="ORD-1002">
+
+            <div class="order-header">
+
+                <strong>
+                    Order #ORD-1002
+                </strong>
+
+
+                <span
+                    class="order-status shipped">
+                    Shipped
+                </span>
+
+            </div>
+
+
+            <div class="order-product">
+
+                <div class="order-product-icon">
+                    💻
+                </div>
+
+                <div>
+
+                    <strong>
+                        MacBook Air M3
+                    </strong>
+
+                    <p>
+                        Expected delivery 12 August 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-actions">
+
+                <button
+                    aria-label="Track order ORD-1002">
+                    Track Order
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ORDER 3 -->
+
+        <div class="order"
+             data-order-id="ORD-1003">
+
+            <div class="order-header">
+
+                <strong>
+                    Order #ORD-1003
+                </strong>
+
+
+                <span
+                    class="order-status processing">
+                    Processing
+                </span>
+
+            </div>
+
+
+            <div class="order-product">
+
+                <div class="order-product-icon">
+                    🎧
+                </div>
+
+                <div>
+
+                    <strong>
+                        Sony WH-1000XM5
+                    </strong>
+
+                    <p>
+                        Expected delivery 15 August 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="order-actions">
+
+                <button
+                    aria-label="Track order ORD-1003">
+                    Track Order
+                </button>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ================================================= -->
+<!-- FOOTER -->
+<!-- ================================================= -->
+
+<footer>
+
+    ShopKart © 2026
+
+    <br><br>
+
+    Playwright Locator Training Demo
+
+</footer>
+
+
+</body>
+
+</html>
