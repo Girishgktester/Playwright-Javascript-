@@ -1,0 +1,18 @@
+Assignment – Double Click & Hover
+Double Click
+Locate the Double Click Target and perform a double-click using dblclick().
+Perform a double-click with a 500 ms delay between mouse actions.
+Perform a Shift + Double Click on the Double Click Target.
+Perform a double-click at a specific position inside the target using x and y.
+Perform a force double-click on the target.
+Perform a double-click with a 5-second timeout.
+Use trial: true to check whether the Double Click Target is actionable without actually double-clicking it.
+
+Hover
+Hover over the Hover Target and verify that the hover effect appears.
+Hover over the target using force: true.
+Perform a Shift + Hover on the Modifier Hover Target.
+Perform a Shift + Alt + Hover on the Modifier Hover Target.
+Hover at a specific X/Y position inside the Hover Position Target.
+Hover over the target with a 5-second timeout.
+Use trial: true to check whether the Hover Target is actionable without actually hovering.

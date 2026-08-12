@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playwright Mouse Actions Lab</title>
+<style>
+  :root{
+    --bg:#07111f; --panel:#0d1b2e; --panel2:#10243c; --text:#eaf2ff;
+    --muted:#91a4bf; --blue:#5da9ff; --green:#4ade80; --orange:#fb923c;
+    --red:#fb7185; --purple:#a78bfa; --cyan:#22d3ee; --border:#1e3857;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text);
+    background:
+      radial-gradient(circle at 10% 0%,#12335a 0,transparent 30%),
+      radial-gradient(circle at 90% 10%,#29204d 0,transparent 28%),
+      var(--bg);
+  }
+  header{padding:34px 6vw 24px;border-bottom:1px solid var(--border);background:rgba(7,17,31,.82);backdrop-filter:blur(12px);position:sticky;top:0;z-index:5}
+  .top{max-width:1250px;margin:auto;display:flex;justify-content:space-between;gap:24px;align-items:center}
+  h1{font-size:32px;margin:0 0 6px;letter-spacing:-1px}
+  h1 span{color:var(--blue)}
+  .subtitle{color:var(--muted);margin:0}
+  .badge{padding:8px 12px;border:1px solid #31537a;border-radius:999px;color:#b9d8ff;background:#0b1d33;font-size:13px;white-space:nowrap}
+  main{max-width:1250px;margin:28px auto 70px;padding:0 22px}
+  .hero{
+    display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-bottom:22px
+  }
+  .hero-card,.card{background:linear-gradient(145deg,rgba(16,36,60,.96),rgba(9,24,42,.96));border:1px solid var(--border);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.22)}
+  .hero-card{padding:26px}
+  .hero-card h2{margin:0 0 12px;font-size:24px}
+  .mental{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .pill{padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:#0a1728;font-family:ui-monospace,monospace;font-size:13px}
+  .arrow{color:var(--cyan)}
+  .legend{padding:22px}
+  .legend h3{margin-top:0}
+  .legend div{padding:10px 0;border-bottom:1px solid #18304b;color:var(--muted)}
+  .legend b{color:var(--text)}
+  .section{margin-top:22px}
+  .section-title{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+  .number{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#12345a;color:#9dcbff;font-weight:800}
+  .section-title h2{margin:0;font-size:21px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .card{padding:20px}
+  .card.full{grid-column:1/-1}
+  .card h3{margin:0 0 7px;font-size:17px}
+  .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:15px}
+  button{
+    border:0;border-radius:10px;padding:11px 15px;background:linear-gradient(135deg,#2d8cff,#5da9ff);
+    color:#06111f;font-weight:800;cursor:pointer;transition:.18s;box-shadow:0 7px 18px rgba(52,142,255,.18)
+  }
+  button:hover{transform:translateY(-1px);filter:brightness(1.08)}
+  button.secondary{background:#17324f;color:#d8eaff;border:1px solid #2b4d70;box-shadow:none}
+  button.warn{background:linear-gradient(135deg,#f59e0b,#fb923c)}
+  button.danger{background:linear-gradient(135deg,#f43f5e,#fb7185)}
+  .demo-row{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:13px}
+  .mouse-buttons{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .mouse-buttons button{display:inline-flex;align-items:center;justify-content:center;min-width:120px;white-space:nowrap}
+.kw{color:#c084fc}.str{color:#86efac}.fn{color:#67e8f9}.num{color:#fbbf24}
+  .toast-area{min-height:48px;margin-top:10px}
+  .toast{
+    display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;
+    background:#09182a;border:1px solid #244a6d;color:#dcecff;animation:in .2s ease;
+  }
+  .toast .dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 14px currentColor}
+  .toast.warning .dot{background:var(--orange)}
+  .toast.error .dot{background:var(--red)}
+  .toast.info .dot{background:var(--cyan)}
+  @keyframes in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .position-target{
+    height:180px;border:1px dashed #3b6a98;border-radius:14px;background:
+      linear-gradient(90deg,transparent 49.5%,#24496b 50%,transparent 50.5%),
+      linear-gradient(0deg,transparent 49.5%,#24496b 50%,transparent 50.5%),#0a192a;
+    position:relative;cursor:crosshair;overflow:hidden;margin-bottom:12px
+  }
+  .position-target .crosshair{position:absolute;width:16px;height:16px;border:2px solid var(--cyan);border-radius:50%;transform:translate(-50%,-50%);display:none;box-shadow:0 0 16px #22d3ee}
+  .position-target .label{position:absolute;inset:0;display:grid;place-items:center;color:#7894b3;font-size:13px}
+  .status-line{font-size:13px;color:var(--muted);margin-top:8px}
+  .options-table{width:100%;border-collapse:collapse;font-size:13px}
+  .options-table th,.options-table td{padding:11px;border-bottom:1px solid #1a3550;text-align:left;vertical-align:top}
+  .options-table th{color:#9fc8f6;background:#0a1728}
+  .options-table code{font-family:ui-monospace,monospace;color:#b7d6ff}
+  .callout{padding:14px;border-radius:13px;background:#0a192a;border:1px solid #254665;margin-top:12px;font-size:13px;line-height:1.55}
+  .callout strong{color:#fff}
+  .bad{border-color:#633043;background:#25121b}.good{border-color:#245b3c;background:#0c2118}
+  .three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  footer{max-width:1250px;margin:auto;padding:0 22px 40px;color:#6f86a3;font-size:12px}
+  @media(max-width:900px){.hero,.grid,.three{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <div>
+      <h1>Playwright <span>Mouse Actions Lab</span></h1>
+      <p class="subtitle">Interactive classroom demo — Click • Double Click • Right Click + all important click options</p>
+    </div>
+    <div class="badge">JavaScript + Playwright</div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-card">
+      <h2>The mental model</h2>
+      <p class="desc">The locator tells Playwright <b>WHAT</b> to interact with. The action and its options tell Playwright <b>HOW</b> to interact with it.</p>
+      <div class="mental">
+        <span class="pill">getByRole(...)</span><span class="arrow">→</span>
+        <span class="pill">click(...options)</span><span class="arrow">→</span>
+        <span class="pill">mouse behavior</span>
+      </div>
+    </div>
+    <div class="legend">
+      <h3>Quick map</h3>
+      <div><b>Normal</b> — </div>
+      <div><b>Double</b> — </div>
+      <div><b>Right</b> — </div>
+      <div><b>Middle</b> — </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">1</div><h2>Click — button option</h2></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Try the mouse buttons</h3>
+        <p class="desc">Click each button. The toast tells you exactly which mouse button was requested.</p>
+        <div class="demo-row mouse-buttons">
+          <button type="button" onclick="toast('Left click performed','success')">Left Click</button>
+          <button type="button" class="secondary" onclick="toast('Right click performed','info')">Right Click</button>
+          <button type="button" class="warn" onclick="toast('Middle click performed','warning')">Middle Click</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Playwright options</h3>
+        <table class="options-table">
+          <tr><th>Option</th><th>Meaning</th><th>Example</th></tr>
+          <tr><td></td><td>Mouse button</td><td>, , </td></tr>
+          <tr><td></td><td>Number of clicks</td><td></td></tr>
+          <tr><td></td><td>Mouse down → mouse up delay</td><td></td></tr>
+          <tr><td></td><td>Bypass actionability checks</td><td></td></tr>
+          <tr><td></td><td>Keyboard keys held during click</td><td></td></tr>
+          <tr><td></td><td>Point inside the element</td><td></td></tr>
+          <tr><td></td><td>Maximum wait for action</td><td></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">2</div><h2>Click Count</h2></div>
+    <div class="card">
+      <h3>Click the target multiple times</h3>
+      <p class="desc">There are no preset ×1 / ×2 / ×3 buttons. Click the same target once, twice, three times, or any number of times. The counter reports the actual number of clicks.</p>
+      <button id="realClickTarget" onclick="realClickCounter()">Click Me</button>
+      <div id="realClickToast" class="toast-area"></div>
+      <button class="secondary" onclick="resetRealClickCounter()">Reset Counter</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">3</div><h2>Delay</h2></div>
+    <div class="card">
+      <h3>Mouse down → wait → mouse up</h3>
+      <p class="desc">Delay is measured in milliseconds. It is about mouse interaction timing — not a general replacement for synchronization.</p>
+      <div class="demo-row">
+        <button onclick="delayDemo(500)">Delay 500 ms</button>
+        <button onclick="delayDemo(1000)">Delay 1000 ms</button>
+        <button onclick="delayDemo(2000)">Delay 2000 ms</button>
+      </div>
+      <div id="delayToast" class="toast-area"></div>
+      <div class="callout bad"><strong>❌ Don't:</strong> add  just because your application is slow. Investigate the real synchronization problem.</div>
+      <div class="callout good"><strong>✅ Use:</strong> delay when you are intentionally testing mouse timing/behavior.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">4</div><h2>Force</h2></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Normal click vs force click</h3>
+        <p class="desc">The overlay blocks the target. A normal click should fail because the target cannot receive the click. The force version should still work.</p>
+        <div style="position:relative;padding:18px;border:1px solid #24425f;border-radius:13px;background:#09182a">
+          <button id="forceTarget" onclick="forceTargetClicked()">Target Button</button>
+          <div id="overlay" onclick="overlayIntercepted()" style="position:absolute;inset:0;background:rgba(251,113,133,.18);display:grid;place-items:center;border-radius:13px;color:#ffb5c1;font-weight:700;cursor:not-allowed">
+            OVERLAY — blocks normal interaction
+          </div>
+        </div>
+        <div class="demo-row" style="margin-top:12px">
+          <button class="warn" onclick="forceDemo()">Force Click</button>
+          <button class="secondary" onclick="removeOverlay()">Remove Overlay</button>
+        </div>
+        <div id="forceToast" class="toast-area"></div>
+      </div>
+      <div class="card">
+        <h3>What should happen?</h3>
+        <div class="callout bad"><strong>Normal Click:</strong> should NOT reach the target while the overlay is present.</div>
+        <div class="callout good"><strong>Force Click:</strong> should report that the click succeeded by bypassing the normal actionability restriction.</div>
+        <div class="callout"><strong>Remove Overlay:</strong> normal click should work again because the target is now unobstructed.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">5</div><h2>Modifiers</h2></div>
+    <div class="card">
+      <h3>Actually hold the modifier and click</h3>
+      <p class="desc">These are real browser interactions. Click the target normally and it should NOT succeed. Hold the required key while clicking and the matching action should succeed.</p>
+      <div id="modifierTarget" class="position-target" style="height:130px;cursor:pointer" onclick="modifierTargetClick(event)">
+        <span class="label">Try: normal click • Shift + Click • Ctrl + Click • Alt + Click</span>
+      </div>
+      <div id="modifierToast" class="toast-area"></div>
+      <div class="callout"><strong>Try it yourself:</strong> First click normally. Then hold <b>Shift</b> and click. Repeat with <b>Ctrl</b> and <b>Alt</b>. The page detects the actual key state from your mouse click.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">6</div><h2>Position</h2></div>
+    <div class="card">
+      <p class="desc">Position is relative to the element's top-left corner. Click anywhere inside the demo box to see the coordinates.</p>
+      <div id="positionTarget" class="position-target" onclick="positionDemo(event)">
+        <span class="label">Click anywhere inside this area</span>
+        <span id="crosshair" class="crosshair"></span>
+      </div>
+      <div id="positionToast" class="toast-area"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">7</div><h2>Timeout</h2></div>
+    <div class="card">
+      <h3>Maximum wait for the click action</h3>
+      <p class="desc">Use a custom timeout when you intentionally need a different action timeout. Values are milliseconds.</p>
+      <div class="demo-row">
+        <button onclick="timeoutDemo(3000)">Simulate 3000 ms timeout</button>
+        <button onclick="timeoutDemo(10000)">Simulate 10000 ms timeout</button>
+      </div>
+      <div id="timeoutToast" class="toast-area"></div>
+      <div class="callout"><strong>10,000 ms = 10 seconds.</strong> The timeout is the maximum time Playwright will wait for the click action to become possible.</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">8</div><h2>Double Click</h2></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Interactive double-click target</h3>
+        <p class="desc">Double-click the card. The browser page counts the double-click and shows the result.</p>
+        <div id="dblTarget" style="padding:28px;border:1px solid #365b7f;border-radius:15px;background:#0a1c30;text-align:center;cursor:pointer;user-select:none"
+             ondblclick="doubleDemo()">
+          <div style="font-size:24px">🖱️</div>
+          <b>Double-click me</b>
+          <div style="color:#7f98b5;font-size:13px;margin-top:5px">Like opening/editing a file</div>
+        </div>
+        <div id="dblToast" class="toast-area"></div>
+      </div>
+      <div class="card">
+        <h3>Playwright examples</h3>
+        <div class="callout good"><strong>Best practice:</strong> use  when the test requirement is explicitly a double-click.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title"><div class="number">9</div><h2>Right Click / Context Click</h2></div>
+    <div class="grid">
+      <div class="card">
+        <h3>Right-click the file</h3>
+        <div id="contextTarget" style="padding:25px;border:1px solid #365b7f;border-radius:15px;background:#0a1c30;text-align:center;cursor:context-menu;user-select:none"
+             oncontextmenu="contextDemo(event)">
+          <div style="font-size:24px">📄</div>
+          <b>Test Report.pdf</b>
+          <div style="color:#7f98b5;font-size:13px;margin-top:5px">Right-click me</div>
+        </div>
+        <div id="contextToast" class="toast-area"></div>
+      </div>
+      <div class="card">
+        <h3>Playwright examples</h3>
+        <div class="callout"><strong>Remember:</strong> right-click is implemented through .</div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 10. HOVER -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <div class="number">10</div>
+      <h2>Hover — All Options</h2>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>Normal Hover</h3>
+
+        <p class="desc">
+          Move the mouse over the target. The target reacts only when the
+          pointer actually enters it.
+        </p>
+
+        <div
+          id="hoverTarget"
+          style="
+          padding:30px;
+          border:1px solid #365b7f;
+          border-radius:15px;
+          background:#0a1c30;
+          text-align:center;
+          transition:.25s;
+          "
+          onmouseenter="hoverEnter()"
+          onmouseleave="hoverLeave()"
+        >
+          <div style="font-size:26px">🖱️</div>
+          <b>Hover over me</b>
+          <div id="hoverHint"
+               style="color:#7f98b5;font-size:13px;margin-top:6px">
+            Move your mouse here
+          </div>
+        </div>
+
+        <div id="hoverToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Position</h3>
+
+        <p class="desc">
+          Move the mouse inside the box. The actual X/Y location is displayed.
+          This demonstrates targeting a specific point inside an element.
+        </p>
+
+        <div
+          id="hoverPositionTarget"
+          class="position-target"
+          onmousemove="hoverPositionDemo(event)"
+          onmouseleave="hoverPositionLeave()"
+        >
+          <span class="label">Move your mouse around this area</span>
+          <span id="hoverCrosshair" class="crosshair"></span>
+        </div>
+
+        <div id="hoverPositionToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Modifiers</h3>
+
+        <p class="desc">
+          Hold Shift, Ctrl, Alt, or Meta while moving the mouse over the target.
+          The page detects the real keyboard state.
+        </p>
+
+        <div
+          id="hoverModifierTarget"
+          style="
+          padding:30px;
+          border:1px solid #365b7f;
+          border-radius:15px;
+          background:#0a1c30;
+          text-align:center;
+          "
+          onmouseenter="hoverModifierDemo(event)"
+        >
+          <b>Hold a modifier + hover</b>
+        </div>
+
+        <div id="hoverModifierToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Force / Trial / Timeout</h3>
+
+        <p class="desc">
+          The overlay blocks the target. Use the controls to understand the
+          difference between normal hover, force, trial, and timeout.
+        </p>
+
+        <div style="
+          position:relative;
+          padding:18px;
+          border:1px solid #24425f;
+          border-radius:13px;
+          background:#09182a;
+        ">
+
+          <div
+            id="hoverForceTarget"
+            style="
+            padding:24px;
+            border-radius:12px;
+            background:#17324f;
+            text-align:center;
+            "
+          >
+            Hover Target
+          </div>
+
+          <div
+            id="hoverOverlay"
+            style="
+            position:absolute;
+            inset:0;
+            background:rgba(251,113,133,.18);
+            display:grid;
+            place-items:center;
+            border-radius:13px;
+            color:#ffb5c1;
+            font-weight:700;
+            "
+          >
+            OVERLAY — blocks hover
+          </div>
+
+        </div>
+
+        <div class="demo-row" style="margin-top:12px">
+
+          <button class="danger" onclick="hoverNormalDemo()">
+            Normal Hover
+          </button>
+
+          <button class="warn" onclick="hoverForceDemo()">
+            Force Hover
+          </button>
+
+          <button class="secondary" onclick="hoverTrialDemo()">
+            Trial Hover
+          </button>
+
+          <button class="secondary" onclick="hoverTimeoutDemo()">
+            Timeout
+          </button>
+
+          <button class="secondary" onclick="removeHoverOverlay()">
+            Remove Overlay
+          </button>
+
+        </div>
+
+        <div id="hoverForceToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Hover Options — Complete</h3>
+
+        <table class="options-table">
+
+          <tr>
+            <th>Option</th>
+            <th>What it does</th>
+            <th>Demo</th>
+          </tr>
+
+          <tr>
+            <td>force</td>
+            <td>Bypasses actionability checks</td>
+            <td>Force Hover</td>
+          </tr>
+
+          <tr>
+            <td>modifiers</td>
+            <td>Holds keyboard modifiers during hover</td>
+            <td>Shift / Ctrl / Alt / Meta</td>
+          </tr>
+
+          <tr>
+            <td>position</td>
+            <td>Hover at a specific point inside the element</td>
+            <td>X / Y demo</td>
+          </tr>
+
+          <tr>
+            <td>timeout</td>
+            <td>Maximum time to wait for hover</td>
+            <td>Timeout button</td>
+          </tr>
+
+          <tr>
+            <td>trial</td>
+            <td>Checks actionability without performing hover</td>
+            <td>Trial Hover</td>
+          </tr>
+
+          <tr>
+            <td>scroll</td>
+            <td>Controls scrolling before the action</td>
+            <td>auto / none</td>
+          </tr>
+
+        </table>
+
+        <div class="callout">
+          <strong>Deprecated:</strong>
+          noWaitAfter exists in the API but has no effect. It is intentionally
+          not presented as a useful option.
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- 11. DRAG AND DROP -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <div class="number">11</div>
+      <h2>Drag &amp; Drop — All Options</h2>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>Basic Drag &amp; Drop</h3>
+
+        <p class="desc">
+          Drag the item into the target. This is the normal drag-and-drop
+          scenario students should learn first.
+        </p>
+
+        <div
+          style="
+          display:grid;
+          grid-template-columns:1fr 1fr;
+          gap:18px;
+          align-items:center;
+          "
+        >
+
+          <div
+            id="dragItem"
+            draggable="true"
+            ondragstart="dragStart(event)"
+            ondragend="dragEnd(event)"
+            style="
+            padding:22px;
+            border-radius:14px;
+            background:linear-gradient(135deg,#2d8cff,#5da9ff);
+            color:#06111f;
+            font-weight:800;
+            cursor:grab;
+            user-select:none;
+            text-align:center;
+            "
+          >
+            📦 Drag Me
+          </div>
+
+          <div
+            id="dropZone"
+            ondragover="dragOver(event)"
+            ondragleave="dragLeave(event)"
+            ondrop="dropItem(event)"
+            style="
+            min-height:105px;
+            display:grid;
+            place-items:center;
+            border:2px dashed #3b6a98;
+            border-radius:14px;
+            color:#7894b3;
+            background:#0a192a;
+            transition:.2s;
+            "
+          >
+            🎯 Drop Here
+          </div>
+
+        </div>
+
+        <div id="dragToast" class="toast-area"></div>
+
+        <button class="secondary" onclick="resetDrag()">
+          Reset Drag Demo
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Source Position + Target Position</h3>
+
+        <p class="desc">
+          Choose exact starting and ending coordinates relative to the
+          source and target elements.
+        </p>
+
+        <div class="three">
+
+          <div>
+            <label>Source X</label>
+            <input id="sourceX" type="number" value="20"
+              style="width:100%;padding:9px;margin-top:5px">
+          </div>
+
+          <div>
+            <label>Source Y</label>
+            <input id="sourceY" type="number" value="20"
+              style="width:100%;padding:9px;margin-top:5px">
+          </div>
+
+          <div>
+            <label>Target X</label>
+            <input id="targetX" type="number" value="30"
+              style="width:100%;padding:9px;margin-top:5px">
+          </div>
+
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Target Y</label>
+          <input id="targetY" type="number" value="30"
+            style="width:100%;padding:9px;margin-top:5px">
+        </div>
+
+        <button style="margin-top:12px" onclick="dragPositionDemo()">
+          Test Positions
+        </button>
+
+        <div id="dragPositionToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Steps</h3>
+
+        <p class="desc">
+          Steps control how many interpolated mouse-move events represent
+          the travel between source and target.
+        </p>
+
+        <div class="demo-row">
+
+          <button onclick="dragStepsDemo(1)">
+            1 Step
+          </button>
+
+          <button onclick="dragStepsDemo(5)">
+            5 Steps
+          </button>
+
+          <button onclick="dragStepsDemo(20)">
+            20 Steps
+          </button>
+
+        </div>
+
+        <div id="dragStepsToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Force / Scroll / Timeout / Trial</h3>
+
+        <p class="desc">
+          These options control actionability, scrolling, waiting, and
+          readiness checks.
+        </p>
+
+        <div class="demo-row">
+
+          <button class="warn" onclick="dragOptionDemo('force: true')">
+            Force
+          </button>
+
+          <button onclick="dragOptionDemo('scroll: auto')">
+            Scroll: auto
+          </button>
+
+          <button onclick="dragOptionDemo('scroll: none')">
+            Scroll: none
+          </button>
+
+          <button onclick="dragOptionDemo('timeout: 5000')">
+            Timeout: 5000
+          </button>
+
+          <button class="secondary" onclick="dragOptionDemo('trial: true')">
+            Trial
+          </button>
+
+        </div>
+
+        <div id="dragOptionsToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Drag &amp; Drop Options — Complete</h3>
+
+        <table class="options-table">
+
+          <tr>
+            <th>Option</th>
+            <th>What it does</th>
+            <th>Demo</th>
+          </tr>
+
+          <tr>
+            <td>force</td>
+            <td>Bypasses actionability checks</td>
+            <td>Force</td>
+          </tr>
+
+          <tr>
+            <td>sourcePosition</td>
+            <td>Exact start point inside source</td>
+            <td>Source X / Y</td>
+          </tr>
+
+          <tr>
+            <td>targetPosition</td>
+            <td>Exact drop point inside target</td>
+            <td>Target X / Y</td>
+          </tr>
+
+          <tr>
+            <td>steps</td>
+            <td>Number of interpolated mouse-move events</td>
+            <td>1 / 5 / 20</td>
+          </tr>
+
+          <tr>
+            <td>scroll</td>
+            <td>Controls scrolling before drag</td>
+            <td>auto / none</td>
+          </tr>
+
+          <tr>
+            <td>timeout</td>
+            <td>Maximum time to wait</td>
+            <td>5000 ms</td>
+          </tr>
+
+          <tr>
+            <td>trial</td>
+            <td>Checks actionability without dragging</td>
+            <td>Trial</td>
+          </tr>
+
+        </table>
+
+        <div class="callout">
+          <strong>Important:</strong>
+          dragTo uses a target locator plus the options above. The destination
+          locator is the target itself, not an option.
+        </div>
+
+        <div class="callout">
+          <strong>Deprecated:</strong>
+          noWaitAfter has no effect and should not be taught as a useful
+          current option.
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- 12. KEYBOARD -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <div class="number">12</div>
+      <h2>Keyboard Actions — All Options</h2>
+    </div>
+
+    <div class="grid">
+
+      <div class="card">
+
+        <h3>locator.press()</h3>
+
+        <p class="desc">
+          Use the controls to demonstrate normal keys, special keys,
+          shortcuts, and the delay between keydown and keyup.
+        </p>
+
+        <input
+          id="keyboardInput"
+          type="text"
+          placeholder="Type something here..."
+          oninput="keyboardInputChanged()"
+          onkeydown="keyboardKeyDown(event)"
+          onkeyup="keyboardKeyUp(event)"
+          style="
+          width:100%;
+          padding:13px;
+          border-radius:10px;
+          border:1px solid #31537a;
+          background:#071522;
+          color:#eaf2ff;
+          outline:none;
+          margin-bottom:12px;
+          "
+        >
+
+        <div class="demo-row">
+
+          <button onclick="keyboardAction('Enter')">
+            Press Enter
+          </button>
+
+          <button onclick="keyboardAction('ArrowDown')">
+            Arrow Down
+          </button>
+
+          <button onclick="keyboardAction('Escape')">
+            Escape
+          </button>
+
+          <button onclick="keyboardAction('ControlOrMeta+A')">
+            Ctrl/Cmd + A
+          </button>
+
+        </div>
+
+        <div class="demo-row">
+
+          <button onclick="keyboardDelayDemo(0)">
+            Delay 0
+          </button>
+
+          <button onclick="keyboardDelayDemo(500)">
+            Delay 500 ms
+          </button>
+
+        </div>
+
+        <div id="keyboardToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>pressSequentially()</h3>
+
+        <p class="desc">
+          Sends characters one by one. Try the two typing speeds.
+          This is useful when an application reacts to individual key events.
+        </p>
+
+        <input
+          id="sequentialInput"
+          type="text"
+          placeholder="Sequential typing demo"
+          style="
+          width:100%;
+          padding:13px;
+          border-radius:10px;
+          border:1px solid #31537a;
+          background:#071522;
+          color:#eaf2ff;
+          margin-bottom:12px;
+          "
+        >
+
+        <div class="demo-row">
+
+          <button onclick="sequentialDemo(0)">
+            Delay 0
+          </button>
+
+          <button onclick="sequentialDemo(100)">
+            Delay 100 ms
+          </button>
+
+        </div>
+
+        <div id="sequentialToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>keyboard.down() / keyboard.up()</h3>
+
+        <p class="desc">
+          Demonstrates holding and releasing a key.
+        </p>
+
+        <div class="demo-row">
+
+          <button onclick="keyboardDownDemo('Shift')">
+            Key Down: Shift
+          </button>
+
+          <button onclick="keyboardUpDemo('Shift')">
+            Key Up: Shift
+          </button>
+
+          <button onclick="keyboardDownDemo('Control')">
+            Key Down: Ctrl
+          </button>
+
+          <button onclick="keyboardUpDemo('Control')">
+            Key Up: Ctrl
+          </button>
+
+        </div>
+
+        <div id="keyStateToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>keyboard.type()</h3>
+
+        <p class="desc">
+          Types text character by character. Delay controls the time
+          between characters.
+        </p>
+
+        <input
+          id="typeInput"
+          type="text"
+          placeholder="Keyboard type demo"
+          style="
+          width:100%;
+          padding:13px;
+          border-radius:10px;
+          border:1px solid #31537a;
+          background:#071522;
+          color:#eaf2ff;
+          margin-bottom:12px;
+          "
+        >
+
+        <div class="demo-row">
+
+          <button onclick="keyboardTypeDemo(0)">
+            Delay 0
+          </button>
+
+          <button onclick="keyboardTypeDemo(100)">
+            Delay 100 ms
+          </button>
+
+        </div>
+
+        <div id="typeToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>keyboard.insertText()</h3>
+
+        <p class="desc">
+          Inserts text directly as input. Modifier keys do not change the
+          text inserted by this method.
+        </p>
+
+        <input
+          id="insertInput"
+          type="text"
+          placeholder="Insert text demo"
+          style="
+          width:100%;
+          padding:13px;
+          border-radius:10px;
+          border:1px solid #31537a;
+          background:#071522;
+          color:#eaf2ff;
+          margin-bottom:12px;
+          "
+        >
+
+        <button onclick="insertTextDemo()">
+          Insert Text
+        </button>
+
+        <div id="insertToast" class="toast-area"></div>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>Keyboard Options — Complete</h3>
+
+        <table class="options-table">
+
+          <tr>
+            <th>API</th>
+            <th>Options / arguments</th>
+            <th>Use</th>
+          </tr>
+
+          <tr>
+            <td>locator.press</td>
+            <td>key, delay</td>
+            <td>Press a key on a specific element</td>
+          </tr>
+
+          <tr>
+            <td>pressSequentially</td>
+            <td>text, delay, timeout, signal</td>
+            <td>Character-by-character typing</td>
+          </tr>
+
+          <tr>
+            <td>keyboard.press</td>
+            <td>key, delay</td>
+            <td>Page-level key press</td>
+          </tr>
+
+          <tr>
+            <td>keyboard.down</td>
+            <td>key</td>
+            <td>Hold a key down</td>
+          </tr>
+
+          <tr>
+            <td>keyboard.up</td>
+            <td>key</td>
+            <td>Release a key</td>
+          </tr>
+
+          <tr>
+            <td>keyboard.type</td>
+            <td>text, delay</td>
+            <td>Type text as keyboard input</td>
+          </tr>
+
+          <tr>
+            <td>keyboard.insertText</td>
+            <td>text</td>
+            <td>Insert text directly</td>
+          </tr>
+
+        </table>
+
+        <div class="callout good">
+          <strong>Best practice:</strong>
+          use locator.press when a particular element should receive the key.
+          Use page-level keyboard actions when you intentionally need global
+          keyboard control.
+        </div>
+
+        <div class="callout">
+          <strong>Note:</strong>
+          noWaitAfter is deprecated and has no useful effect.
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- 13. SUMMARY -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <div class="number">13</div>
+      <h2>All Mouse &amp; Keyboard Options at a Glance</h2>
+    </div>
+
+    <div class="card">
+
+      <table class="options-table">
+
+        <thead>
+          <tr>
+            <th>Action</th>
+            <th>Options / controls covered</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Click</td>
+            <td>button, clickCount, delay, force, modifiers, position, timeout</td>
+          </tr>
+
+          <tr>
+            <td>Double Click</td>
+            <td>button, delay, force, modifiers, position, scroll, timeout, trial</td>
+          </tr>
+
+          <tr>
+            <td>Right Click</td>
+            <td>button + click options</td>
+          </tr>
+
+          <tr>
+            <td>Hover</td>
+            <td>force, modifiers, position, timeout, trial, scroll</td>
+          </tr>
+
+          <tr>
+            <td>Drag &amp; Drop</td>
+            <td>force, sourcePosition, targetPosition, steps, scroll, timeout, trial</td>
+          </tr>
+
+          <tr>
+            <td>Keyboard</td>
+            <td>press, pressSequentially, down, up, type, insertText + their supported options</td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  Playwright Mouse Actions Lab • Designed for classroom demonstrations • The interactive behavior on this page is a browser-side simulation; the code snippets show the corresponding Playwright JavaScript syntax.
+</footer>
+
+<script>
+  let toastTimer;
+
+  function toast(message,type='success'){
+    clearTimeout(toastTimer);
+
+    const old=document.getElementById('globalToast');
+    if(old) old.remove();
+
+    const el=document.createElement('div');
+
+    el.id='globalToast';
+    el.className='toast ' + (type==='success'?'':type);
+
+    el.style.position='fixed';
+    el.style.right='24px';
+    el.style.bottom='24px';
+    el.style.zIndex='20';
+    el.style.minWidth='280px';
+
+    el.innerHTML='<span class="dot"></span><span>'+message+'</span>';
+
+    document.body.appendChild(el);
+
+    toastTimer=setTimeout(()=>el.remove(),3200);
+  }
+
+
+  /* CLICK COUNT */
+
+  let realClickCount=0;
+
+  function realClickCounter(){
+    realClickCount++;
+
+    document.getElementById('realClickToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span>You clicked <b>'+
+      realClickCount+' '+(realClickCount===1?'time':'times')+
+      '</b>.</span></div>';
+  }
+
+  function resetRealClickCounter(){
+    realClickCount=0;
+
+    document.getElementById('realClickToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Counter reset to <b>0</b>.</span></div>';
+  }
+
+
+  /* DELAY */
+
+  function delayDemo(ms){
+    const area=document.getElementById('delayToast');
+
+    area.innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span>Waiting '+
+      ms+' ms before mouse-up…</span></div>';
+
+    setTimeout(()=>{
+      area.innerHTML=
+        '<div class="toast"><span class="dot"></span><span>Click completed after <b>'+
+        ms+' ms</b> delay.</span></div>';
+    },Math.min(ms,2500));
+  }
+
+
+  /* FORCE */
+
+  function forceTargetClicked(){
+    document.getElementById('forceToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Normal click worked!</b> The overlay is removed, so the target received the click.</span></div>';
+  }
+
+  function overlayIntercepted(){
+    document.getElementById('forceToast').innerHTML=
+      '<div class="toast error"><span class="dot"></span><span><b>Normal click did not reach the target.</b> The overlay intercepted it.</span></div>';
+  }
+
+  function forceDemo(){
+    document.getElementById('forceToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span><b>force:true worked!</b> Playwright would bypass the normal actionability restriction.</span></div>';
+  }
+
+  function removeOverlay(){
+    document.getElementById('overlay').style.display='none';
+
+    document.getElementById('forceToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Overlay removed.</b> Now click the Target Button normally — it should work.</span></div>';
+  }
+
+
+  /* MODIFIERS */
+
+  function modifierTargetClick(e){
+    const keys=[];
+
+    if(e.shiftKey) keys.push('Shift');
+    if(e.ctrlKey) keys.push('Ctrl');
+    if(e.altKey) keys.push('Alt');
+    if(e.metaKey) keys.push('Meta');
+
+    const area=document.getElementById('modifierToast');
+
+    if(keys.length===0){
+      area.innerHTML=
+        '<div class="toast error"><span class="dot"></span><span><b>Normal click rejected.</b> Hold Shift, Ctrl, Alt, or Meta and click.</span></div>';
+      return;
+    }
+
+    area.innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>'+
+      keys.join(' + ')+' + Click detected!</b> Actual modifier key was held.</span></div>';
+  }
+
+
+  /* POSITION */
+
+  function positionDemo(e){
+    const r=e.currentTarget.getBoundingClientRect();
+
+    const x=Math.round(e.clientX-r.left);
+    const y=Math.round(e.clientY-r.top);
+
+    const c=document.getElementById('crosshair');
+
+    c.style.left=x+'px';
+    c.style.top=y+'px';
+    c.style.display='block';
+
+    document.getElementById('positionToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Clicked at <b>x: '+
+      x+', y: '+y+'</b> relative to the element top-left.</span></div>';
+  }
+
+
+  /* TIMEOUT */
+
+  function timeoutDemo(ms){
+    document.getElementById('timeoutToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span>Playwright would wait up to <b>'+
+      ms+' ms</b> for the click action.</span></div>';
+  }
+
+
+  /* DOUBLE CLICK */
+
+  function doubleDemo(){
+    document.getElementById('dblToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Double-click detected!</b> Equivalent to two rapid clicks.</span></div>';
+  }
+
+
+  /* RIGHT CLICK */
+
+  function contextDemo(e){
+    e.preventDefault();
+
+    document.getElementById('contextToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>Right-click detected!</b> Context menu action requested.</span></div>';
+
+    return false;
+  }
+
+
+  /* HOVER */
+
+  function hoverEnter(){
+    const target=document.getElementById('hoverTarget');
+
+    target.style.background='linear-gradient(135deg,#12385f,#17304f)';
+    target.style.transform='translateY(-3px)';
+
+    document.getElementById('hoverHint').textContent=
+      'Mouse is currently hovering over the element';
+
+    document.getElementById('hoverToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Hover detected!</b> Mouse entered the target.</span></div>';
+  }
+
+  function hoverLeave(){
+    const target=document.getElementById('hoverTarget');
+
+    target.style.background='#0a1c30';
+    target.style.transform='none';
+
+    document.getElementById('hoverHint').textContent=
+      'Move your mouse here';
+
+    document.getElementById('hoverToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span>Mouse left the target.</span></div>';
+  }
+
+  function hoverPositionDemo(e){
+    const r=e.currentTarget.getBoundingClientRect();
+
+    const x=Math.round(e.clientX-r.left);
+    const y=Math.round(e.clientY-r.top);
+
+    const c=document.getElementById('hoverCrosshair');
+
+    c.style.left=x+'px';
+    c.style.top=y+'px';
+    c.style.display='block';
+
+    document.getElementById('hoverPositionToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Hover position: <b>x: '+
+      x+', y: '+y+'</b></span></div>';
+  }
+
+  function hoverPositionLeave(){
+    document.getElementById('hoverPositionToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span>Mouse left the hover area.</span></div>';
+  }
+
+  function hoverModifierDemo(e){
+    const keys=[];
+
+    if(e.shiftKey) keys.push('Shift');
+    if(e.ctrlKey) keys.push('Ctrl');
+    if(e.altKey) keys.push('Alt');
+    if(e.metaKey) keys.push('Meta');
+
+    document.getElementById('hoverModifierToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span>'+
+      (keys.length
+        ? '<b>'+keys.join(' + ')+' + Hover detected!</b>'
+        : '<b>Normal hover detected.</b> No modifier is held.')+
+      '</span></div>';
+  }
+
+  function hoverNormalDemo(){
+    document.getElementById('hoverForceToast').innerHTML=
+      '<div class="toast error"><span class="dot"></span><span><b>Normal hover blocked.</b> The overlay is covering the target.</span></div>';
+  }
+
+  function hoverForceDemo(){
+    document.getElementById('hoverForceToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span><b>force:true</b> would bypass the normal actionability restriction.</span></div>';
+  }
+
+  function hoverTrialDemo(){
+    document.getElementById('hoverForceToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>trial:true</b> checks actionability without performing the hover.</span></div>';
+  }
+
+  function hoverTimeoutDemo(){
+    document.getElementById('hoverForceToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span><b>timeout</b> controls the maximum wait for the hover action.</span></div>';
+  }
+
+  function removeHoverOverlay(){
+    document.getElementById('hoverOverlay').style.display='none';
+
+    document.getElementById('hoverForceToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Overlay removed.</b> The target can now be hovered normally.</span></div>';
+  }
+
+
+  /* DRAG & DROP */
+
+  let dragStarted=false;
+
+  function dragStart(e){
+    dragStarted=true;
+
+    e.dataTransfer.setData('text/plain','drag-item');
+
+    document.getElementById('dragItem').classList.add('dragging');
+
+    document.getElementById('dragToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>Drag started.</b> Move the item to the drop zone.</span></div>';
+  }
+
+  function dragOver(e){
+    e.preventDefault();
+
+    document.getElementById('dropZone').classList.add('drag-over');
+  }
+
+  function dragLeave(){
+    document.getElementById('dropZone').classList.remove('drag-over');
+  }
+
+  function dropItem(e){
+    e.preventDefault();
+
+    const drop=document.getElementById('dropZone');
+
+    drop.classList.remove('drag-over');
+
+    document.getElementById('dragItem').classList.remove('dragging');
+
+    if(dragStarted){
+      drop.innerHTML='✅ <b>Item dropped successfully!</b>';
+      drop.style.borderColor='#4ade80';
+      drop.style.color='#4ade80';
+
+      document.getElementById('dragToast').innerHTML=
+        '<div class="toast"><span class="dot"></span><span><b>Drag & Drop successful!</b> Source reached the target.</span></div>';
+    }
+
+    dragStarted=false;
+  }
+
+  function dragEnd(){
+    document.getElementById('dragItem').classList.remove('dragging');
+  }
+
+  function resetDrag(){
+    const drop=document.getElementById('dropZone');
+
+    drop.innerHTML='🎯 Drop Here';
+    drop.style.borderColor='#3b6a98';
+    drop.style.color='#7894b3';
+
+    document.getElementById('dragToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Drag demo reset.</span></div>';
+
+    dragStarted=false;
+  }
+
+  function dragPositionDemo(){
+    const sx=document.getElementById('sourceX').value;
+    const sy=document.getElementById('sourceY').value;
+    const tx=document.getElementById('targetX').value;
+    const ty=document.getElementById('targetY').value;
+
+    document.getElementById('dragPositionToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Source position: <b>('+
+      sx+', '+sy+')</b> → Target position: <b>('+tx+', '+ty+')</b></span></div>';
+  }
+
+  function dragStepsDemo(steps){
+    document.getElementById('dragStepsToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>'+
+      steps+' interpolated mouse-move '+(steps===1?'step':'steps')+
+      '</b> would represent the drag travel.</span></div>';
+  }
+
+  function dragOptionDemo(option){
+    document.getElementById('dragOptionsToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span>Selected drag option: <b>'+
+      option+'</b></span></div>';
+  }
+
+
+  /* KEYBOARD */
+
+  function keyboardInputChanged(){
+    const value=document.getElementById('keyboardInput').value;
+
+    document.getElementById('keyboardToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span>Typed text: <b>'+
+      (value || '(empty)')+'</b></span></div>';
+  }
+
+  function keyboardKeyDown(e){
+    document.getElementById('keyboardToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>Key down:</b> '+
+      e.key+'</span></div>';
+  }
+
+  function keyboardKeyUp(e){
+    document.getElementById('keyboardToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>Key up:</b> '+
+      e.key+'</span></div>';
+  }
+
+  function keyboardAction(key){
+    const input=document.getElementById('keyboardInput');
+
+    input.focus();
+
+    if(key==='ControlOrMeta+A'){
+      input.select();
+
+      document.getElementById('keyboardToast').innerHTML=
+        '<div class="toast"><span class="dot"></span><span><b>Ctrl/Cmd + A:</b> text selected.</span></div>';
+
+      return;
+    }
+
+    document.getElementById('keyboardToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>'+
+      key+' pressed.</b></span></div>';
+  }
+
+  function keyboardDelayDemo(ms){
+    document.getElementById('keyboardToast').innerHTML=
+      '<div class="toast warning"><span class="dot"></span><span><b>press() delay:</b> '+
+      ms+' ms between keydown and keyup.</span></div>';
+  }
+
+  function sequentialDemo(delay){
+    const input=document.getElementById('sequentialInput');
+
+    input.focus();
+    input.value='Hello Playwright';
+
+    document.getElementById('sequentialToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>pressSequentially()</b> with <b>'+
+      delay+' ms</b> delay between characters.</span></div>';
+  }
+
+  function keyboardDownDemo(key){
+    document.getElementById('keyStateToast').innerHTML=
+      '<div class="toast info"><span class="dot"></span><span><b>keyboard.down("'+
+      key+'")</b> — key is being held.</span></div>';
+  }
+
+  function keyboardUpDemo(key){
+    document.getElementById('keyStateToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>keyboard.up("'+
+      key+'")</b> — key released.</span></div>';
+  }
+
+  function keyboardTypeDemo(delay){
+    const input=document.getElementById('typeInput');
+
+    input.focus();
+    input.value='Playwright Keyboard';
+
+    document.getElementById('typeToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>keyboard.type()</b> with <b>'+
+      delay+' ms</b> delay between characters.</span></div>';
+  }
+
+  function insertTextDemo(){
+    const input=document.getElementById('insertInput');
+
+    input.focus();
+    input.value='Inserted text';
+
+    document.getElementById('insertToast').innerHTML=
+      '<div class="toast"><span class="dot"></span><span><b>keyboard.insertText()</b> inserted text directly.</span></div>';
+  }
+</script>
+</body>
+</html>
