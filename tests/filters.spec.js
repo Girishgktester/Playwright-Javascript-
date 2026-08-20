@@ -11,13 +11,16 @@ test('has title', async ({ page }) => {
 
 
 
-test.only('Add specific product to cart', async ({ page }) => {
+test('Add specific product to cart', async ({ page }) => {
 
   await page.goto('https://demowebshop.tricentis.com/desktops')
 
-  console.log(await page.locator('.item-box').filter({ hasText: 'Build your own computer' }).textContent())
-
-  await page.locator('.item-box').filter({ hasText: 'Build your own computer' }).getByRole('button', { name: 'Add to cart' }).click();
+  const item = page.locator('.item-box').filter({ hasText: 'Build your own computer' });
+  await expect(item).toBeVisible({ timeout: 10000 });
+  console.log(await item.textContent());
+  const addButton = item.getByRole('button', { name: 'Add to cart' });
+  await expect(addButton).toBeVisible({ timeout: 5000 });
+  await addButton.click();
 
 });
 

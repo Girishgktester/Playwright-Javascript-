@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Learning Command Center</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">AI Learning Command Center</p>
+          <h1>AI Learning Command Center</h1>
+        </div>
+        <div class="topbar-actions">
+          <div class="summary-pill">
+            <span class="label">Current streak</span>
+            <strong id="headerCurrentStreak">0 days</strong>
+          </div>
+          <div class="summary-pill accent">
+            <span class="label">Overall progress</span>
+            <strong id="headerOverallProgress">0%</strong>
+          </div>
+          <button id="themeToggle" class="ghost-button" aria-label="Toggle theme">🌙</button>
+          <button id="newEntryButton" class="primary-button">+ New entry</button>
+        </div>
+      </header>
+
+      <section class="toolbar-panel">
+        <div class="toolbar-group compact">
+          <label>
+            Daily goal (min)
+            <input id="dailyGoalInput" type="number" min="15" step="15" value="90" />
+          </label>
+          <label>
+            Overall target (hrs)
+            <input id="overallGoalInput" type="number" min="1" step="1" value="300" />
+          </label>
+          <label>
+            Goal achieved %
+            <input id="achievedThresholdInput" type="number" min="50" max="200" step="5" value="100" />
+          </label>
+          <label>
+            Partial goal %
+            <input id="partialThresholdInput" type="number" min="10" max="100" step="5" value="75" />
+          </label>
+        </div>
+        <div class="toolbar-group">
+          <label>
+            Date range
+            <select id="dateRangeFilter">
+              <option value="all">All time</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="90d">Last 90 days</option>
+              <option value="365d">Last year</option>
+            </select>
+          </label>
+          <label>
+            Topic
+            <select id="topicFilter">
+              <option value="all">All topics</option>
+            </select>
+          </label>
+          <label>
+            Learning type
+            <select id="typeFilter">
+              <option value="all">All types</option>
+            </select>
+          </label>
+        </div>
+        <div class="toolbar-group actions-right">
+          <button id="importButton" class="ghost-button small">Import</button>
+          <button id="exportButton" class="ghost-button small">Export</button>
+          <button id="backupButton" class="ghost-button small">Backup</button>
+          <button id="resetButton" class="danger-button small">Reset</button>
+          <input id="importFileInput" type="file" accept="application/json,.csv" hidden />
+        </div>
+      </section>
+
+      <main class="dashboard">
+        <section class="kpi-grid" id="kpiGrid"></section>
+
+        <section class="two-column top-panel">
+          <div class="panel today-panel">
+            <div class="panel-header">
+              <h2>Today's Learning</h2>
+              <span id="todayDateLabel" class="muted"></span>
+            </div>
+            <div id="todayFocusContent"></div>
+          </div>
+
+          <div class="panel goal-panel">
+            <div class="panel-header">
+              <h2>Overall Goal Progress</h2>
+              <span id="overallGoalMeta" class="muted"></span>
+            </div>
+            <div class="goal-wrapper">
+              <div class="progress-ring" id="progressRing">
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r="46" class="ring-bg"></circle>
+                  <circle cx="60" cy="60" r="46" class="ring-value" id="ringValue"></circle>
+                </svg>
+                <div class="ring-center">
+                  <strong id="ringPercent">0%</strong>
+                </div>
+              </div>
+              <div class="goal-summary">
+                <div class="summary-row">
+                  <span>Completed</span>
+                  <strong id="completedHoursValue">0h</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Remaining</span>
+                  <strong id="remainingHoursValue">0h</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Projected</span>
+                  <strong id="projectedDateValue">Not enough data</strong>
+                </div>
+                <div class="summary-row">
+                  <span>Required pace</span>
+                  <strong id="requiredPaceValue">0h/day</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel charts-panel">
+          <div class="panel-header">
+            <h2>Daily Learning Trend</h2>
+            <div class="segmented-control">
+              <button class="segmented active" data-range="30d">30D</button>
+              <button class="segmented" data-range="90d">90D</button>
+              <button class="segmented" data-range="all">All</button>
+            </div>
+          </div>
+          <div id="dailyTrendChart" class="chart-area"></div>
+        </section>
+
+        <section class="panel heatmap-panel">
+          <div class="panel-header">
+            <h2>Learning Calendar</h2>
+            <span class="muted">Daily activity intensity</span>
+          </div>
+          <div id="heatmapContainer" class="heatmap-container"></div>
+        </section>
+
+        <section class="two-column">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Topic Distribution</h2>
+            </div>
+            <div id="topicChart" class="donut-card"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Learning Type Distribution</h2>
+            </div>
+            <div id="typeChart" class="bar-collection"></div>
+          </div>
+        </section>
+
+        <section class="two-column">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Weekly Performance</h2>
+            </div>
+            <div id="weeklyTrendChart" class="bar-chart"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Day-of-Week Performance</h2>
+            </div>
+            <div id="weekdayChart" class="bar-chart"></div>
+          </div>
+        </section>
+
+        <section class="two-column">
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Learning Quality Score</h2>
+            </div>
+            <div id="qualityScoreCard" class="quality-score-card"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <h2>Confidence vs Difficulty</h2>
+            </div>
+            <div id="scatterChart" class="scatter-chart"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>How Am I Progressing?</h2>
+          </div>
+          <div id="insightsCard" class="insights-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Weekly Review</h2>
+          </div>
+          <div id="weeklyReviewGrid" class="mini-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Monthly Review</h2>
+          </div>
+          <div id="monthlyReviewGrid" class="mini-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Milestones</h2>
+          </div>
+          <div id="milestonesContainer" class="milestone-grid"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2>Recent Learning Activity</h2>
+          </div>
+          <div id="recentActivityTable" class="table-wrap"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="entryModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modalTitle">Add learning record</h3>
+          <button class="icon-button" data-close="true" aria-label="Close">×</button>
+        </div>
+
+        <form id="entryForm">
+          <div class="form-grid">
+            <label>
+              Date
+              <input type="date" name="date" required />
+            </label>
+            <label>
+              Daily goal (minutes)
+              <input type="number" name="goalMinutes" min="0" step="5" required />
+            </label>
+            <label>
+              Actual learning time (minutes)
+              <input type="number" name="actualMinutes" min="0" step="5" required />
+            </label>
+            <label>
+              Practical minutes (optional)
+              <input type="number" name="practicalMinutes" min="0" step="5" />
+            </label>
+            <label>
+              Sessions
+              <input type="number" name="sessions" min="1" step="1" value="1" />
+            </label>
+            <label>
+              Difficulty (1–10)
+              <input type="number" name="difficulty" min="1" max="10" step="1" value="5" />
+            </label>
+            <label>
+              Confidence (1–10)
+              <input type="number" name="confidence" min="1" max="10" step="1" value="5" />
+            </label>
+            <label>
+              Main topic/category
+              <input type="text" name="mainTopic" placeholder="AI agents" />
+            </label>
+            <label class="full-width">
+              Topics (comma separated)
+              <input type="text" name="topics" placeholder="Prompt Engineering, RAG, MCP" />
+            </label>
+            <div class="full-width">
+              <span class="field-label">Learning type</span>
+              <div id="learningTypeGroup" class="pill-group"></div>
+            </div>
+            <label class="full-width">
+              What I learned
+              <textarea name="whatLearned" rows="3" placeholder="Describe the concepts or skills you studied..."></textarea>
+            </label>
+            <label class="full-width">
+              Practical work completed
+              <textarea name="practicalWork" rows="3" placeholder="What did you build, test, or practice?"></textarea>
+            </label>
+            <label>
+              Planned start time
+              <input type="time" name="plannedStartTime" />
+            </label>
+            <label>
+              Actual start time
+              <input type="time" name="actualStartTime" />
+            </label>
+            <label class="full-width">
+              Notes
+              <textarea name="notes" rows="2" placeholder="Optional notes, blockers, reflections..."></textarea>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="ghost-button" data-close="true">Cancel</button>
+            <button type="submit" class="primary-button">Save record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

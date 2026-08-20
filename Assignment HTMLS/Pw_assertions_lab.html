@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playwright Assertions Lab</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f4f7fb;color:#172033}
+  header{background:linear-gradient(135deg,#172554,#2563eb);color:white;padding:34px 6vw}
+  header h1{margin:0 0 8px;font-size:34px}
+  header p{margin:0;color:#dbeafe;font-size:16px}
+  .container{max-width:1200px;margin:28px auto;padding:0 22px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+  .card{background:white;border:1px solid #e5eaf2;border-radius:16px;padding:22px;box-shadow:0 6px 20px rgba(20,35,60,.06)}
+  .card h2{margin:0 0 7px;font-size:19px}
+  .hint{margin:0 0 18px;color:#667085;font-size:13px}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  button,input,select{font:inherit}
+  button{border:0;border-radius:9px;padding:10px 15px;cursor:pointer;background:#2563eb;color:white;font-weight:600}
+  button.secondary{background:#e8eef8;color:#1e3a8a}
+  button.danger{background:#dc2626}
+  button:disabled{background:#cbd5e1;color:#64748b;cursor:not-allowed}
+  input,select{border:1px solid #cbd5e1;border-radius:9px;padding:10px 12px;outline:none}
+  input:focus,select:focus{border-color:#2563eb;box-shadow:0 0 0 3px #dbeafe}
+  .badge{display:inline-block;padding:5px 10px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:700}
+  .hidden{display:none!important}
+  .box{padding:15px;border-radius:10px;background:#f8fafc;border:1px dashed #cbd5e1}
+  .products{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .product{border:1px solid #e2e8f0;border-radius:12px;padding:15px;background:#fff}
+  .product .icon{font-size:30px}
+  .product h3{margin:8px 0 4px;font-size:16px}
+  .price{font-weight:800;color:#2563eb}
+  .product .status{font-size:12px;color:#64748b}
+  .checklist{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .check{padding:12px;background:#f8fafc;border-radius:10px;border:1px solid #e5e7eb}
+  .check strong{display:block;font-size:13px}
+  .check span{font-size:12px;color:#667085}
+  .footer{text-align:center;color:#667085;padding:30px}
+  .full{grid-column:1/-1}
+  @media(max-width:800px){.grid,.products,.checklist{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🧪 Playwright Assertions Lab</h1>
+  <p>A realistic practice page packed with assertion checkpoints — inspect the UI, find the right element, and decide what should be verified.</p>
+</header>
+
+<div class="container">
+  <div class="grid">
+
+    <section class="card">
+      <h2>1. Page Identity</h2>
+      <p class="hint">Checkpoint: page-level information</p>
+      <div class="box">
+        <strong id="pageHeading">Assertions Academy</strong>
+        <p>Practice environment for UI automation.</p>
+        <span class="badge">Environment: QA</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Visibility & Presence</h2>
+      <p class="hint">Checkpoint: visible, hidden, attached and detached elements</p>
+      <div class="row">
+        <button id="visibleButton">Visible Button</button>
+        <button id="hiddenButton" class="secondary hidden">Hidden Button</button>
+        <button id="toggleMessage" class="secondary">Toggle Message</button>
+      </div>
+      <div id="visibilityMessage" class="box" style="margin-top:12px">
+        ✅ This message is currently visible.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Enabled & Disabled</h2>
+      <p class="hint">Checkpoint: control state</p>
+      <div class="row">
+        <button id="enabledButton">Enabled Action</button>
+        <button id="disabledButton" disabled>Disabled Action</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Editable & Input State</h2>
+      <p class="hint">Checkpoint: value, empty, editable</p>
+      <div class="row">
+        <input id="nameInput" placeholder="Enter your name" value="Girish">
+        <input id="readonlyInput" value="Read only field" readonly>
+        <button id="clearInput" class="secondary">Clear Name</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Text Assertions</h2>
+      <p class="hint">Checkpoint: exact text vs partial text</p>
+      <div class="box">
+        <h3 id="welcomeText">Welcome back, Automation Engineer!</h3>
+        <p id="partialText">Your Playwright Assertions Lab is ready for practice.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>6. Checkbox & Radio State</h2>
+      <p class="hint">Checkpoint: checked / unchecked</p>
+      <div class="row">
+        <label><input type="checkbox" id="terms" checked> Accept terms</label>
+        <label><input type="checkbox" id="newsletter"> Subscribe newsletter</label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <label><input type="radio" name="level" id="beginner" value="beginner"> Beginner</label>
+        <label><input type="radio" name="level" id="advanced" value="advanced" checked> Advanced</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7. Attributes & Classes</h2>
+      <p class="hint">Checkpoint: HTML attributes and CSS classes</p>
+      <a id="docsLink" href="#assertions" class="badge">Assertions Documentation</a>
+      <div id="statusBadge" class="badge" style="margin-left:8px">PASSED</div>
+    </section>
+
+    <section class="card">
+      <h2>8. Select / Dropdown</h2>
+      <p class="hint">Checkpoint: selected value</p>
+      <select id="environment">
+        <option value="dev">Development</option>
+        <option value="qa" selected>QA</option>
+        <option value="stage">Staging</option>
+        <option value="prod">Production</option>
+      </select>
+    </section>
+
+    <section class="card full">
+      <h2>9. Product Count & Collection Assertions</h2>
+      <p class="hint">Checkpoint: number of matching elements and collection text</p>
+      <div class="products" id="productList">
+        <article class="product">
+          <div class="icon">💻</div>
+          <h3>MacBook Air M3</h3>
+          <div class="price">$1,099</div>
+          <div class="status">In Stock</div>
+        </article>
+        <article class="product">
+          <div class="icon">📱</div>
+          <h3>iPhone 16 Pro</h3>
+          <div class="price">$999</div>
+          <div class="status">In Stock</div>
+        </article>
+        <article class="product">
+          <div class="icon">⌨️</div>
+          <h3>Magic Keyboard</h3>
+          <div class="price">$149</div>
+          <div class="status">Low Stock</div>
+        </article>
+        <article class="product">
+          <div class="icon">🎧</div>
+          <h3>AirPods Pro</h3>
+          <div class="price">$249</div>
+          <div class="status">In Stock</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>10. Dynamic Status</h2>
+      <p class="hint">Checkpoint: verify changing UI state</p>
+      <div id="orderStatus" class="box">Order Status: <strong>Processing</strong></div>
+      <button id="updateOrder" style="margin-top:12px">Update Order</button>
+    </section>
+
+    <section class="card">
+      <h2>11. Error / Negative Assertions</h2>
+      <p class="hint">Checkpoint: prove something should NOT exist or appear</p>
+      <div id="errorMessage" class="box hidden">❌ Payment failed. Please try again.</div>
+      <button id="toggleError" class="danger">Toggle Error</button>
+    </section>
+
+    <section class="card full" id="assertions">
+      <h2>12. Assertion Challenge Board</h2>
+      <p class="hint">Use this section as the student's exercise sheet. No answers are provided.</p>
+      <div class="checklist">
+        <div class="check"><strong>✓ Page title</strong><span>Verify the browser title.</span></div>
+        <div class="check"><strong>✓ Heading text</strong><span>Verify the main heading exactly.</span></div>
+        <div class="check"><strong>✓ Visible element</strong><span>Verify the visible button.</span></div>
+        <div class="check"><strong>✓ Hidden element</strong><span>Verify the hidden button.</span></div>
+        <div class="check"><strong>✓ Enabled state</strong><span>Verify Enabled Action can be used.</span></div>
+        <div class="check"><strong>✓ Disabled state</strong><span>Verify Disabled Action cannot be used.</span></div>
+        <div class="check"><strong>✓ Input value</strong><span>Verify the name field value.</span></div>
+        <div class="check"><strong>✓ Editable state</strong><span>Compare editable and readonly fields.</span></div>
+        <div class="check"><strong>✓ Exact text</strong><span>Verify the welcome message.</span></div>
+        <div class="check"><strong>✓ Partial text</strong><span>Verify a phrase inside the paragraph.</span></div>
+        <div class="check"><strong>✓ Checked state</strong><span>Verify the terms checkbox.</span></div>
+        <div class="check"><strong>✓ Unchecked state</strong><span>Verify newsletter is unchecked.</span></div>
+        <div class="check"><strong>✓ Attribute</strong><span>Verify the documentation link href.</span></div>
+        <div class="check"><strong>✓ Class</strong><span>Verify the PASSED badge class.</span></div>
+        <div class="check"><strong>✓ Selected value</strong><span>Verify QA is selected.</span></div>
+        <div class="check"><strong>✓ Count</strong><span>Count the product cards.</span></div>
+        <div class="check"><strong>✓ Collection text</strong><span>Verify product names.</span></div>
+        <div class="check"><strong>✓ Dynamic state</strong><span>Change the order status and verify it.</span></div>
+        <div class="check"><strong>✓ Negative assertion</strong><span>Verify the error is initially absent.</span></div>
+        <div class="check"><strong>✓ Soft assertions</strong><span>Pick multiple checkpoints and validate them together.</span></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="footer">
+    Playwright Assertions Lab • Built for hands-on automation practice
+  </div>
+</div>
+
+<script>
+  const visibilityMessage = document.getElementById('visibilityMessage');
+  document.getElementById('toggleMessage').addEventListener('click', () => {
+    visibilityMessage.classList.toggle('hidden');
+    visibilityMessage.textContent = visibilityMessage.classList.contains('hidden')
+      ? 'This message is hidden.'
+      : '✅ This message is currently visible.';
+  });
+
+  document.getElementById('clearInput').addEventListener('click', () => {
+    document.getElementById('nameInput').value = '';
+  });
+
+  const statuses = ['Processing', 'Packed', 'Shipped', 'Delivered'];
+  let statusIndex = 0;
+  document.getElementById('updateOrder').addEventListener('click', () => {
+    statusIndex = Math.min(statusIndex + 1, statuses.length - 1);
+    document.getElementById('orderStatus').innerHTML =
+      'Order Status: <strong>' + statuses[statusIndex] + '</strong>';
+  });
+
+  document.getElementById('toggleError').addEventListener('click', () => {
+    document.getElementById('errorMessage').classList.toggle('hidden');
+  });
+</script>
+</body>
+</html>

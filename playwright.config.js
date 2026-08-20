@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig, devices } from '@playwright/test';
+const { defineConfig, devices } = require('@playwright/test');
 
 /**
  * Read environment variables from file.
@@ -12,8 +12,11 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
-export default defineConfig({
-
+module.exports = defineConfig({
+expect:{
+  timeout: 15000
+},
+  
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -36,59 +39,57 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
     ignoreHTTPSErrors: true,
+    actionTimeout :1000,
 
     launchOptions: {
-      slowMo: 2000,
+      // slowMo: 2000,
       args: ['--start-maximized']
+    },
+  },
 
-
+  /* Configure projects for major browsers */
+  projects: [
+    {
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome']
+      },
     },
 
-    /* Configure projects for major browsers */
-    projects: [
-      {
-        name: 'chromium',
-        use: {
-          ...devices['Desktop Chrome']
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-        },
-      },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
-      // {
-      //   name: 'firefox',
-      //   use: { ...devices['Desktop Firefox'] },
-      // },
+    /* Test against mobile viewports. */
+    // {
+    //   name: 'Mobile Chrome',
+    //   use: { ...devices['Pixel 5'] },
+    // },
+    // {
+    //   name: 'Mobile Safari',
+    //   use: { ...devices['iPhone 12'] },
+    // },
 
-      // {
-      //   name: 'webkit',
-      //   use: { ...devices['Desktop Safari'] },
-      // },
+    /* Test against branded browsers. */
+    // {
+    //   name: 'Microsoft Edge',
+    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+    // },
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    // },
+  ],
 
-      /* Test against mobile viewports. */
-      // {
-      //   name: 'Mobile Chrome',
-      //   use: { ...devices['Pixel 5'] },
-      // },
-      // {
-      //   name: 'Mobile Safari',
-      //   use: { ...devices['iPhone 12'] },
-      // },
-
-      /* Test against branded browsers. */
-      // {
-      //   name: 'Microsoft Edge',
-      //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-      // },
-      // {
-      //   name: 'Google Chrome',
-      //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-      // },
-    ],
-
-    /* Run your local dev server before starting the tests */
-    // webServer: {
-    //   command: 'npm run start',
-    //   url: 'http://localhost:3000',
-    //   reuseExistingServer: !process.env.CI,
-  },
+  /* Run your local dev server before starting the tests */
+  // webServer: {
+  //   command: 'npm run start',
+  //   url: 'http://localhost:3000',
+  //   reuseExistingServer: !process.env.CI,
 });

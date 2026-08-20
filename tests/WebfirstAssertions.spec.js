@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { time } from 'node:console';
 
 test('1. Page assertions', async ({ page }) => {
   await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');
@@ -46,13 +47,13 @@ test('1. Page assertions', async ({ page }) => {
 test('Dropdown assertions', async ({ page }) => {
   await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');
 
-  // const dropdownvalues = page.locator('#environment option');
+  const dropdownvalues = page.locator('#environment');
 
-  // await dropdownvalues.click();
+  await dropdownvalues.click(); 
 
   // await dropdownvalues.selectOption({ index: 2 })
 
-  // await expect(dropdownvalues).toHaveValue('stage')
+  await expect(dropdownvalues).toHaveValue('stage')
 
   // const options = await page.locator('#environment option').allTextContents();
 
@@ -62,23 +63,22 @@ test('Dropdown assertions', async ({ page }) => {
 
   // await expect(options).toHaveText(["Development", "QA", "Staging", "Production"])
 
-  const options = page.locator('#environment option');
+//   const options = page.locator('#environment');
 
-  await expect(options).toHaveText([
-    'Development',
-    'QA',
-    'Staging',
-    'Production'
-  ]);
+//   console.log('options' + await options.textContent())
+//     console.log('options' + await options.getAttribute('value'))
 
-  const options1 = await page.locator('#environment option').allTextContents();
 
-expect(options1).toEqual([
-  'Development',
-  'QA',
-  'Staging',
-  'Production'
-]);
+//   await expect(options).toHaveValue('QA');
+
+//   const options1 = await page.locator('#environment option').allTextContents();
+
+// expect(options1).toEqual([
+//   'Development',
+//   'QA',
+//   'Staging',
+//   'Production'
+// ]);
 
 })
 
@@ -89,14 +89,20 @@ test('Soft assertions', async ({ page }) => {
 
   await expect(page).toHaveTitle('Playwright Assertions Lab');
 
-  const visibleButton = page.getByRole('button', { name: 'Visible Button' });
+  const visibleButton = page.getByRole('button', { name: 'Visible Button' }).waitFor({ state: 'attached', timeout: 1000 });  
+
+  await visibleButton.click({timeout: 1000});
+
 
   // await expect(visibleButton).toBeVisible();
   // await expect(visibleButton).toBeVisible();
   // await expect(visibleButton).toBeVisible();
 
+  await expect(visibleButton).soft.toBeVisible({timeout: 1000});
+
   await expect(visibleButton).soft.toBeVisible();
   await expect(visibleButton).soft.toBeVisible();
-  await expect(visibleButton).soft.toBeVisible();
+
+
 
 });
