@@ -1,0 +1,416 @@
+The Demo Web Shop has registration/login, categories, search, products, cart, wishlist, and featured products, so it gives enough surface area for this. ([Demo Web Shop][1])
+
+## Playwright Assignment — 10 Test Cases
+
+**Website:** [Demo Web Shop](https://demowebshop.tricentis.com/?utm_source=chatgpt.com)
+
+### Rules for students
+
+* Use **Playwright + TypeScript**
+* Do **not** use `waitForTimeout()`
+* Rely on Playwright **auto-waiting**
+* Use Playwright locators instead of unnecessary CSS/XPath
+* Use appropriate **web-first assertions**
+* At least **2 test cases must use soft assertions**
+* Use `expect.soft()` where requested
+* Do not use `force: true` unless you can justify it
+* Use `beforeEach()` where appropriate
+* Each test should be independent
+* No hard-coded sleeps
+
+# 🟢 EASY — 3 Test Cases
+
+### TC01 — Verify Home Page Elements
+
+**Objective:** Practice basic locators, visibility assertions and text assertions.
+
+**Steps:**
+
+1. Open the Demo Web Shop.
+2. Verify the **Register** link is visible.
+3. Verify the **Log in** link is visible.
+4. Verify **Shopping cart** is visible.
+5. Verify **Wishlist** is visible.
+6. Verify the page contains the text **"Welcome to our store"**.
+7. Verify the categories **Books, Computers, Electronics, Apparel & Shoes** are visible.
+
+**Expected:**
+
+* All required elements should be visible.
+* Welcome message should be displayed.
+* All specified categories should exist.
+
+**Concepts:**
+
+* `getByRole()`
+* `getByText()`
+* `toBeVisible()`
+* `toHaveText()`
+* Auto-waiting
+
+---
+
+### TC02 — Search for a Product
+
+**Objective:** Practice keyboard interaction + assertions.
+
+**Steps:**
+
+1. Open the website.
+2. Locate the search box.
+3. Enter **"Laptop"**.
+4. Use the **Enter keyboard action** to perform the search.
+5. Verify the search results page is displayed.
+6. Verify that at least one result containing **Laptop** is displayed.
+7. Verify the search box still contains the searched value.
+
+**Expected:**
+
+* Search should execute successfully.
+* Relevant laptop result(s) should be displayed.
+* Search input should contain `Laptop`.
+
+**Concepts:**
+
+* `fill()`
+* `press('Enter')`
+* `toHaveValue()`
+* `toBeVisible()`
+* Auto-waiting
+
+---
+
+### TC03 — Add Product to Cart
+
+**Objective:** Practice click + cart verification.
+
+**Steps:**
+
+1. Open the website.
+2. Find **14.1-inch Laptop**.
+3. Click the product.
+4. Verify the product name is displayed.
+5. Verify the price is displayed.
+6. Click **Add to cart**.
+7. Verify the cart count changes.
+8. Open the shopping cart.
+9. Verify **14.1-inch Laptop** exists in the cart.
+
+The current site lists the 14.1-inch Laptop at `$1590.00`, so students have a concrete product to work with. ([Demo Web Shop][1])
+
+**Concepts:**
+
+* `click()`
+* `toHaveText()`
+* `toContainText()`
+* `toHaveCount()`
+* Auto-waiting
+* Dynamic UI validation
+
+---
+
+# 🟡 MEDIUM — 3 Test Cases
+
+Here the students need to **combine multiple actions and assertions**.
+
+### TC04 — Registration Form Validation Using Soft Assertions
+
+**Objective:** Practice form interaction + multiple soft assertions.
+
+**Steps:**
+
+1. Open the website.
+2. Click **Register**.
+3. Select gender.
+4. Enter first name.
+5. Enter last name.
+6. Enter an invalid email.
+7. Enter a password.
+8. Enter a different confirmation password.
+9. Click **Register**.
+10. Validate all relevant validation messages using **`expect.soft()`**.
+
+**Important:**
+
+Do not stop the test after the first failed assertion.
+
+Students should validate multiple things such as:
+
+* Email validation
+* Password confirmation validation
+* Required-field validation if applicable
+
+**Concepts:**
+
+* `check()`
+* `fill()`
+* `click()`
+* `expect.soft()`
+* Multiple assertions
+* Form validation
+* Auto-waiting
+
+---
+
+### TC05 — Product Details Using Soft Assertions
+
+**Objective:** Validate several properties of a product in one test.
+
+**Steps:**
+
+1. Open the website.
+2. Open **14.1-inch Laptop**.
+3. Using **soft assertions**, verify:
+
+   * Product name
+   * Product price
+   * Product image is visible
+   * Add to cart button is visible
+   * Product description is visible
+4. At the end, verify the page URL.
+
+**Expected:**
+
+All validations should be attempted even if one assertion fails.
+
+**Concepts:**
+
+* `expect.soft()`
+* `toHaveText()`
+* `toContainText()`
+* `toBeVisible()`
+* `toHaveURL()`
+* Multiple assertions in one test
+
+This is a good test for teaching students **why soft assertions are useful** rather than just teaching the syntax.
+
+---
+
+### TC06 — Mouse Actions on Product
+
+**Objective:** Practice mouse actions.
+
+**Steps:**
+
+1. Open the website.
+2. Navigate to a product/category where product interaction is possible.
+3. Perform a **hover** over the relevant product/category element.
+4. Verify the expected UI change after hover.
+5. Open a product.
+6. Perform a **double-click** on an appropriate clickable element where double-click behavior makes sense.
+7. Perform a **right-click** on an appropriate element.
+8. Verify the expected result/context behavior.
+
+**Important:**
+Students should **not randomly double-click/right-click elements just to satisfy the requirement**. They must identify a meaningful UI behavior and explain why that action is appropriate.
+
+**Concepts:**
+
+* `hover()`
+* `dblclick()`
+* `click({ button: 'right' })`
+* Assertions after mouse actions
+* Auto-waiting
+
+---
+
+# 🔴 HARD — 4 Test Cases
+
+The hard level should require students to **chain actions + assertions + waiting + state validation**.
+
+---
+
+### TC07 — Search → Product → Cart → Verify
+
+**Objective:** Build a complete mini E2E flow.
+
+**Steps:**
+
+1. Open the website.
+2. Search for **"computer"**.
+3. Press `Enter`.
+4. Verify search results are displayed.
+5. Select a computer product.
+6. Verify:
+
+   * Product name
+   * Price
+   * Add to Cart button
+7. Add the product to the cart.
+8. Wait using **Playwright's auto-waiting**, not `waitForTimeout()`.
+9. Verify cart count.
+10. Open the cart.
+11. Verify:
+
+    * Correct product name
+    * Quantity
+    * Unit price
+    * Total price
+
+**Challenge:**
+
+Students must explain **where Playwright is automatically waiting**.
+
+**Concepts:**
+
+* Keyboard
+* Search
+* Click
+* Auto-waiting
+* Multiple assertions
+* Cart validation
+* Dynamic UI
+
+---
+
+### TC08 — Multiple Products + Cart Validation
+
+**Objective:** Practice multiple elements and collection assertions.
+
+**Steps:**
+
+1. Open the website.
+2. Add **3 different products** to the cart.
+3. Open the cart.
+4. Verify all 3 products are present.
+5. Verify the cart contains exactly 3 product rows.
+6. Verify each product has:
+
+   * Product name
+   * Price
+   * Quantity
+7. Change the quantity of one product.
+8. Update the cart.
+9. Verify the updated quantity.
+10. Verify the cart total has changed accordingly.
+
+**Challenge:**
+
+Do not blindly use:
+
+```ts
+page.locator('.product-name').nth(0)
+page.locator('.product-name').nth(1)
+```
+
+Students should create **meaningful locators** that identify the correct product.
+
+**Concepts:**
+
+* Locator chaining
+* `filter()`
+* `hasText`
+* `nth()`
+* `toHaveCount()`
+* `toHaveText()`
+* `toHaveValue()`
+* Auto-waiting
+* State validation
+
+---
+
+### TC09 — Cart Modification + Soft Assertions
+
+**Objective:** Combine cart actions with soft assertions.
+
+**Steps:**
+
+1. Add at least 2 products to the cart.
+2. Open the cart.
+3. Use soft assertions to verify:
+
+   * Product 1 exists
+   * Product 2 exists
+   * Correct quantities
+   * Prices are displayed
+4. Change the quantity of one product.
+5. Update the cart.
+6. Verify the quantity changed.
+7. Remove one product.
+8. Verify the removed product is no longer present.
+9. Verify the remaining product is still present.
+10. Verify the cart count.
+
+**Challenge:**
+
+Use `expect.soft()` for the **initial cart validation**.
+
+Then use normal assertions for critical state changes.
+
+---
+
+### TC10 — Full UI Interaction Challenge
+
+This is the **final assignment**.
+
+### Search
+
+1. Search for a product using the search box.
+2. Use keyboard `Enter`.
+3. Verify search results.
+
+### Product
+
+4. Open a product.
+5. Verify product name and price.
+6. Hover over an appropriate element.
+7. Verify the resulting UI behavior.
+
+### Cart
+
+8. Add the product to cart.
+9. Verify cart count.
+10. Open cart.
+11. Verify product name and price.
+
+### Quantity
+
+12. Change product quantity.
+13. Update cart.
+14. Verify the new quantity.
+
+### Mouse
+
+15. Perform a meaningful **double-click** action.
+16. Perform a meaningful **right-click** action.
+
+### Assertions
+
+17. Use at least **5 different Playwright assertions**.
+18. Use at least **2 soft assertions**.
+19. Use at least one collection assertion such as `toHaveCount()`.
+20. Verify at least one dynamic UI change.
+
+### Waiting
+
+21. **No `waitForTimeout()` anywhere.**
+22. Student must explain why the test can work using Playwright auto-waiting.
+
+---
+
+# What I would actually grade
+
+Don't grade them only on "test passed."
+
+Give them a **20-point evaluation**:
+
+| Area                       | Points |
+| -------------------------- | -----: |
+| Correct locators           |      3 |
+| Actions                    |      3 |
+| Assertions                 |      4 |
+| Soft assertions            |      2 |
+| Auto-waiting               |      3 |
+| Keyboard/mouse actions     |      2 |
+| Test structure/readability |      2 |
+| No unnecessary hard waits  |      1 |
+| **Total**                  | **20** |
+
+### Automatic deduction
+
+**-2** → Uses `waitForTimeout()` unnecessarily
+**-2** → Uses `force: true` without justification
+**-2** → Uses XPath/CSS when a good Playwright locator exists
+**-2** → Assertions are missing/weak
+**-1** → Test depends on another test's execution/state
+
