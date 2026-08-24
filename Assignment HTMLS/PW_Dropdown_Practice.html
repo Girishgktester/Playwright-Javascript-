@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropdown Practice Lab</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef2ff,#f8fafc 45%,#ecfeff);color:#172033}
+.container{max-width:1100px;margin:0 auto;padding:40px 22px 60px}
+.hero{background:linear-gradient(135deg,#111827,#312e81);color:#fff;padding:34px;border-radius:22px;box-shadow:0 18px 50px rgba(31,41,55,.18);margin-bottom:24px}
+.hero h1{margin:0 0 10px;font-size:34px}.hero p{margin:0;color:#dbeafe;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:rgba(255,255,255,.92);border:1px solid #e5e7eb;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.07)}
+.card.full{grid-column:1/-1}
+.badge{display:inline-block;padding:5px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:800;margin-bottom:12px}
+h2{font-size:19px;margin:0 0 8px} .desc{color:#64748b;font-size:14px;margin:0 0 18px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+select,.fake-select{width:100%;max-width:420px;padding:12px 14px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;font-size:15px;outline:none}
+select:focus,.fake-select:focus{border-color:#6366f1;box-shadow:0 0 0 3px #e0e7ff}
+pre{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:15px;overflow:auto;font-size:13px;line-height:1.55;margin:16px 0 0}
+code{font-family:Consolas,monospace}
+.custom-wrap{position:relative;max-width:420px}.fake-select{cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.arrow{font-size:12px}.options{display:none;position:absolute;z-index:10;left:0;right:0;top:52px;background:#fff;border:1px solid #cbd5e1;border-radius:10px;box-shadow:0 12px 30px rgba(15,23,42,.15);overflow:hidden}
+.options.open{display:block}.option{padding:12px 14px;cursor:pointer}.option:hover{background:#eef2ff}
+.note{margin-top:14px;padding:12px 14px;background:#f8fafc;border-left:4px solid #6366f1;border-radius:8px;color:#475569;font-size:13px}
+.footer{margin-top:24px;text-align:center;color:#64748b;font-size:13px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.card.full{grid-column:auto}.hero h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="container">
+<section class="hero">
+<h1>🎯 Dropdown Practice Lab</h1>
+<p>One-page HTML reference covering important dropdown scenarios: native dropdowns, selection methods, validation, loops, custom dropdowns and multi-select.</p>
+</section>
+
+<div class="grid">
+
+<div class="card">
+<span class="badge">01 · NATIVE</span>
+<h2>Select option using selectOption()</h2>
+<p class="desc">Use a native HTML <code>&lt;select&gt;</code> element.</p>
+<label for="environment">Environment</label>
+<select id="environment">
+<option value="dev">Development</option><option value="qa">QA</option><option value="stage">Staging</option><option value="prod">Production</option>
+<option value="uat">UAT</option><option value="sandbox">Sandbox</option><option value="demo">Demo</option><option value="preprod">Pre-Production</option>
+<option value="dr">Disaster Recovery</option><option value="local">Local</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">02 · SELECTION METHODS</span>
+<h2>Select by label, value and index</h2>
+<p class="desc">Three common ways to select an option from a native dropdown.</p>
+<label for="browser">Browser</label>
+<select id="browser">
+<option value="chrome">Chrome</option><option value="firefox">Firefox</option><option value="edge">Edge</option><option value="safari">Safari</option>
+<option value="opera">Opera</option><option value="brave">Brave</option><option value="vivaldi">Vivaldi</option><option value="chromium">Chromium</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">03 · VERIFY</span>
+<h2>Verify selected dropdown value</h2>
+<p class="desc">Check which option is currently selected.</p>
+<label for="country">Country</label>
+<select id="country">
+<option value="india">India</option><option value="usa">USA</option><option value="uk">UK</option><option value="canada">Canada</option>
+<option value="australia">Australia</option><option value="germany">Germany</option><option value="france">France</option><option value="japan">Japan</option>
+<option value="singapore">Singapore</option><option value="uae">United Arab Emirates</option><option value="brazil">Brazil</option><option value="netherlands">Netherlands</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">04 · LOOP</span>
+<h2>Fetch all dropdown values using a loop</h2>
+<p class="desc">Read every option and print its text one by one.</p>
+<label for="department">Department</label>
+<select id="department">
+<option value="development">Development</option><option value="qa">QA</option><option value="devops">DevOps</option><option value="automation">Automation</option>
+<option value="security">Security</option><option value="support">Support</option><option value="product">Product</option><option value="design">Design</option>
+<option value="database">Database</option><option value="cloud">Cloud Engineering</option><option value="data">Data Engineering</option><option value="management">Management</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">05 · COUNT + VALUES</span>
+<h2>Verify option count and all values</h2>
+<p class="desc">Validate both the number of options and their displayed text.</p>
+<label for="role">Role</label>
+<select id="role">
+<option value="admin">Admin</option><option value="manager">Manager</option><option value="developer">Developer</option><option value="tester">Tester</option>
+<option value="lead">Team Lead</option><option value="architect">Architect</option><option value="devops">DevOps Engineer</option><option value="sdet">SDET</option>
+<option value="analyst">Business Analyst</option><option value="intern">Intern</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">06 · CUSTOM DROPDOWN</span>
+<h2>Select from dropdown without &lt;select&gt;</h2>
+<p class="desc">Custom dropdowns require normal locator actions because they are not native select elements.</p>
+<label>Framework</label>
+<div class="custom-wrap">
+<div class="fake-select" id="frameworkDropdown" tabindex="0">
+<span id="frameworkText">Select Framework</span><span class="arrow">▼</span>
+</div>
+<div class="options" id="frameworkOptions">
+<div class="option">Playwright</div>
+<div class="option">Selenium</div>
+<div class="option">Cypress</div>
+<div class="option">WebdriverIO</div>
+<div class="option">TestCafe</div>
+<div class="option">Puppeteer</div>
+<div class="option">Appium</div>
+<div class="option">Espresso</div>
+<div class="option">Detox</div>
+<div class="option">Robot Framework</div>
+</div>
+</div>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">07 · MULTI-SELECT</span>
+<h2>Select multiple options</h2>
+<p class="desc">Native multi-select supports selecting more than one option.</p>
+<label for="skills">Skills</label>
+<select id="skills" multiple size="7">
+<option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="playwright">Playwright</option><option value="appium">Appium</option><option value="wdio">WebdriverIO</option>
+<option value="java">Java</option><option value="python">Python</option><option value="selenium">Selenium</option><option value="cypress">Cypress</option><option value="api">API Testing</option>
+<option value="k6">K6</option><option value="docker">Docker</option>
+</select>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+<div class="card">
+<span class="badge">08 · SINGLE VALUE</span>
+<h2>Verify only one value is selected</h2>
+<p class="desc">For a normal single-select dropdown, verify the expected selected value.</p>
+<label for="status">Status</label>
+<select id="status">
+<option value="pending">Pending</option><option value="in-progress">In Progress</option><option value="completed">Completed</option><option value="failed">Failed</option>
+<option value="blocked">Blocked</option><option value="on-hold">On Hold</option><option value="cancelled">Cancelled</option><option value="reopened">Reopened</option>
+</select>
+<div class="note">A normal <code>&lt;select&gt;</code> without <code>multiple</code> allows only one selected option.</div>
+<div class="note"><strong>Practice Goal:</strong> Interact with this dropdown and validate its behavior using your automation tool.</div>
+</div>
+
+</div>
+<div class="footer">Dropdown Practice · Native + Custom + Multi-select</div>
+</div>
+
+<script>
+const dropdown = document.getElementById('frameworkDropdown');
+const optionsBox = document.getElementById('frameworkOptions');
+const text = document.getElementById('frameworkText');
+
+dropdown.addEventListener('click', () => optionsBox.classList.toggle('open'));
+
+document.querySelectorAll('.option').forEach(option => {
+  option.addEventListener('click', () => {
+    text.textContent = option.textContent;
+    optionsBox.classList.remove('open');
+  });
+});
+
+document.addEventListener('click', e => {
+  if (!dropdown.contains(e.target) && !optionsBox.contains(e.target)) {
+    optionsBox.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

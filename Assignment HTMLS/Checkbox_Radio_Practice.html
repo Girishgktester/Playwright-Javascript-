@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkbox & Radio Button Practice</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef2ff,#f8fafc 45%,#ecfeff);color:#172033}
+.container{max-width:1050px;margin:auto;padding:40px 22px 60px}
+.hero{background:linear-gradient(135deg,#111827,#312e81);color:#fff;padding:34px;border-radius:22px;box-shadow:0 18px 50px rgba(31,41,55,.18);margin-bottom:24px}
+.hero h1{margin:0 0 10px;font-size:32px}.hero p{margin:0;color:#dbeafe;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:rgba(255,255,255,.94);border:1px solid #e5e7eb;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(15,23,42,.07)}
+.full{grid-column:1/-1}
+.badge{display:inline-block;padding:5px 10px;border-radius:999px;background:#eef2ff;color:#4338ca;font-size:12px;font-weight:800;margin-bottom:12px}
+h2{font-size:19px;margin:0 0 8px}.desc{color:#64748b;font-size:14px;line-height:1.5;margin:0 0 18px}
+.group{display:flex;flex-direction:column;gap:12px}
+label.option{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #e2e8f0;border-radius:10px;background:#fff;cursor:pointer;transition:.15s}
+label.option:hover{background:#f8fafc;border-color:#c7d2fe}
+input{width:18px;height:18px;accent-color:#4f46e5}
+.note{margin-top:15px;padding:12px 14px;background:#f8fafc;border-left:4px solid #6366f1;border-radius:8px;color:#475569;font-size:13px;line-height:1.5}
+.footer{text-align:center;color:#64748b;font-size:13px;margin-top:24px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<section class="hero">
+<h1>☑️ Checkbox & Radio Button Practice</h1>
+<p>Simple HTML examples covering the important checkbox and radio-button scenarios used in UI automation practice.</p>
+</section>
+
+<div class="grid">
+
+<div class="card">
+<span class="badge">01 · CHECKBOX</span>
+<h2>Check a checkbox</h2>
+<p class="desc">Basic checkbox that can be selected and unselected.</p>
+<div class="group">
+<label class="option"><input type="checkbox" id="terms"> I agree to the Terms & Conditions</label>
+</div>
+<div class="note">Practice: check the checkbox and verify that it is checked.</div>
+</div>
+
+<div class="card">
+<span class="badge">02 · CHECKBOX</span>
+<h2>Verify checkbox state</h2>
+<p class="desc">Use a pre-checked checkbox to practice state validation.</p>
+<div class="group">
+<label class="option"><input type="checkbox" id="notifications" checked> Enable notifications</label>
+</div>
+<div class="note">Practice: verify checked state, then uncheck it and verify again.</div>
+</div>
+
+<div class="card">
+<span class="badge">03 · CHECKBOX</span>
+<h2>Multiple checkboxes</h2>
+<p class="desc">Select more than one independent checkbox.</p>
+<div class="group">
+<label class="option"><input type="checkbox" id="java"> Java</label>
+<label class="option"><input type="checkbox" id="javascript"> JavaScript</label>
+<label class="option"><input type="checkbox" id="typescript"> TypeScript</label>
+<label class="option"><input type="checkbox" id="python"> Python</label>
+<label class="option"><input type="checkbox" id="kotlin"> Kotlin</label>
+</div>
+<div class="note">Practice: select multiple skills and verify each selected checkbox.</div>
+</div>
+
+<div class="card">
+<span class="badge">04 · CHECKBOX</span>
+<h2>Select specific checkboxes</h2>
+<p class="desc">Useful when several checkboxes exist in the same group.</p>
+<div class="group">
+<label class="option"><input type="checkbox" name="tool" value="playwright"> Playwright</label>
+<label class="option"><input type="checkbox" name="tool" value="selenium"> Selenium</label>
+<label class="option"><input type="checkbox" name="tool" value="appium"> Appium</label>
+<label class="option"><input type="checkbox" name="tool" value="wdio"> WebdriverIO</label>
+</div>
+<div class="note">Practice: select only Playwright and Appium.</div>
+</div>
+
+<div class="card">
+<span class="badge">05 · RADIO BUTTON</span>
+<h2>Select one radio button</h2>
+<p class="desc">Radio buttons with the same name allow only one choice.</p>
+<div class="group">
+<label class="option"><input type="radio" name="environment" value="dev"> Development</label>
+<label class="option"><input type="radio" name="environment" value="qa"> QA</label>
+<label class="option"><input type="radio" name="environment" value="stage"> Staging</label>
+<label class="option"><input type="radio" name="environment" value="prod"> Production</label>
+</div>
+<div class="note">Practice: select QA and verify that QA is selected.</div>
+</div>
+
+<div class="card">
+<span class="badge">06 · RADIO BUTTON</span>
+<h2>Verify selected radio button</h2>
+<p class="desc">One option is already selected.</p>
+<div class="group">
+<label class="option"><input type="radio" name="browser" value="chrome" checked> Chrome</label>
+<label class="option"><input type="radio" name="browser" value="firefox"> Firefox</label>
+<label class="option"><input type="radio" name="browser" value="edge"> Edge</label>
+<label class="option"><input type="radio" name="browser" value="safari"> Safari</label>
+</div>
+<div class="note">Practice: verify Chrome is selected, then select Firefox and verify the state changes.</div>
+</div>
+
+<div class="card full">
+<span class="badge">07 · MIXED SCENARIO</span>
+<h2>Registration Preferences</h2>
+<p class="desc">A realistic form containing both checkboxes and radio buttons.</p>
+
+<div class="group">
+<label class="option"><input type="radio" name="plan" value="free"> Free Plan</label>
+<label class="option"><input type="radio" name="plan" value="pro"> Pro Plan</label>
+<label class="option"><input type="radio" name="plan" value="enterprise"> Enterprise Plan</label>
+
+<hr style="width:100%;border:0;border-top:1px solid #e2e8f0">
+
+<label class="option"><input type="checkbox" id="emailUpdates"> Receive email updates</label>
+<label class="option"><input type="checkbox" id="smsUpdates"> Receive SMS updates</label>
+<label class="option"><input type="checkbox" id="termsFinal"> Accept Terms & Conditions</label>
+</div>
+
+<div class="note">Practice: select one plan, select email updates and accept terms, then verify all states.</div>
+</div>
+
+</div>
+
+<div class="footer">Checkbox & Radio Button Practice · HTML Demo</div>
+</div>
+</body>
+</html>
