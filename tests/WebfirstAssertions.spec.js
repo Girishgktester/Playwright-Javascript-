@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { time } from 'node:console';
 
 test('1. Page assertions', async ({ page }) => {
-  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');
+  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/Pw_assertions_lab.html');
 
   await expect(page).toHaveTitle('Playwright Assertions Lab');
 
@@ -37,7 +37,7 @@ test('1. Page assertions', async ({ page }) => {
   await expect(editable).toHaveValue('Girish')
 
   const empty = page.locator('#clearInput');
-  await expect(editable).soft.toBeEmpty()
+  await expect.soft(editable).not.toBeEmpty();
   await empty.click();
   await expect(editable).toBeEmpty()
 
@@ -45,11 +45,11 @@ test('1. Page assertions', async ({ page }) => {
 
 
 test('Dropdown assertions', async ({ page }) => {
-  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');
+  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/Pw_assertions_lab.html');
 
   const dropdownvalues = page.locator('#environment');
 
-  await dropdownvalues.click(); 
+  await dropdownvalues.selectOption('stage');
 
   // await dropdownvalues.selectOption({ index: 2 })
 
@@ -84,12 +84,12 @@ test('Dropdown assertions', async ({ page }) => {
 
 
 test('Soft assertions', async ({ page }) => {
-  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');
+  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/Pw_assertions_lab.html');
 
 
   await expect(page).toHaveTitle('Playwright Assertions Lab');
 
-  const visibleButton = page.getByRole('button', { name: 'Visible Button' }).waitFor({ state: 'attached', timeout: 1000 });  
+  const visibleButton = page.getByRole('button', { name: 'Visible Button' });
 
   await visibleButton.click({timeout: 1000});
 
@@ -98,10 +98,10 @@ test('Soft assertions', async ({ page }) => {
   // await expect(visibleButton).toBeVisible();
   // await expect(visibleButton).toBeVisible();
 
-  await expect(visibleButton).soft.toBeVisible({timeout: 1000});
+  await expect.soft(visibleButton).toBeVisible({timeout: 1000});
 
-  await expect(visibleButton).soft.toBeVisible();
-  await expect(visibleButton).soft.toBeVisible();
+  await expect.soft(visibleButton).toBeVisible();
+  await expect.soft(visibleButton).toBeVisible();
 
 
 

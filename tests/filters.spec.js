@@ -30,9 +30,7 @@ test('Find book name by author', async ({ page }) => {
 
   await page.goto('https://demoqa.com/books')
 
-  await page.locator('tr').filter({ hasText: 'Richard E. Silverman' }).getByRole('link').click();
-
-  await page.locator('tr').filter({ hasText: "O'Reilly Media'" }).getByRole('link').click();
+  await page.locator('tr').filter({ hasText: 'Richard E. Silverman' }).getByRole('link').first().click();
 
 })
 

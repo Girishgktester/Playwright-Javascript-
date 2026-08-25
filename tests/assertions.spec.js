@@ -17,7 +17,7 @@ test('has title', async ({ page }) => {
     // const logo = page.locator('.header-logo');
 
 
-    const searchButton = page.locator('.button-1 search-box-button');
+    const searchButton = page.locator('.button-1.search-box-button');
 
 
     await expect(searchButton).toBeVisible();

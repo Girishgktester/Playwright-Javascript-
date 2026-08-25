@@ -5,7 +5,7 @@ test.describe('Playwright Assertions Lab', () => {
   test.beforeEach(async ({ page }) => {
     // Opens our Assertions Lab HTML page before every test.
     // Change the URL/path depending on where you host the HTML file.
-await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/Pw_assertions_lab.html');  });
+  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/Pw_assertions_lab.html');  });
 
 
   test('1. Page assertions', async ({ page }) => {
@@ -14,7 +14,7 @@ await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%
     await expect(page).toHaveTitle('Playwright Assertions Lab');
 
     // Verifies that the URL contains our HTML file name.
-    await expect(page).toHaveURL(/playwright_assertions_lab/);
+    await expect(page).toHaveURL(/Pw_assertions_lab/);
   });
 
 

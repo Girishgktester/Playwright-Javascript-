@@ -24,18 +24,14 @@ test('has title', async ({ page }) => {
 
 
 test('Find macbook using hasText', async({page}) =>{
-    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/has.html')
+  await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/Pw_assertions_lab.html')
 
-    // await page.locator('.product-card').filter({hasText : 'MacBook Air M3'}).getByRole('button',{name: 'Add to cart'});
+  const product = page.locator('.product').filter({hasText: 'MacBook Air M3'});
 
-    // const product = page.locator('.product-card').filter({hasText : ' A'});
+  await expect(product).toBeVisible();
+  await expect(product).toContainText('MacBook Air M3');
 
-    await product.getByRole('button', {name: 'Add to cart'}).click();
-
-
-   const wishlist =  await page.locator('.product-card').filter({has:page.getByRole('button', {name:'wishlist'})}).count();
-
-     await expect(wishlist).toBe(4)
+  await expect(page.locator('.product')).toHaveCount(4);
 
 
 

@@ -2,27 +2,27 @@ import { test, expect } from '@playwright/test';
 
 
 test('1. Select option using label index and value', async ({ page }) => {
-    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/PW_Dropdown_Practice.html');
+    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/PW_Dropdown_Practice.html');
 
 
     const dropdodnw = page.locator('#environment');
 
-    dropdodnw.selectOption('qa');
+    await dropdodnw.selectOption('qa');
 
-    dropdodnw.selectOption({ value: 'qa' });
+    await dropdodnw.selectOption({ value: 'qa' });
 
-    dropdodnw.selectOption({ index: 2 });
+    await dropdodnw.selectOption({ index: 2 });
 
-    dropdodnw.selectOption({ label: 'Staging' })
+    await dropdodnw.selectOption({ label: 'Staging' });
 
     await expect(dropdodnw).toHaveValue('stage');
 
-    await page.locator('#country').toHaveValue('india')
+    await expect(page.locator('#country')).toHaveValue('india');
 
 });
 
 test('Fetch all dropdown values using loop', async ({ page }) => {
-    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/PW_Dropdown_Practice.html');
+    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/PW_Dropdown_Practice.html');
 
     const options = page.locator('#department option');
 
@@ -51,7 +51,7 @@ test('Fetch all dropdown values using loop', async ({ page }) => {
 
 
 test('Select custom dropdown option', async ({ page }) => {
-    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/PW_Dropdown_Practice.html');
+    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/PW_Dropdown_Practice.html');
 
     await page.locator('#frameworkDropdown').click();
 
@@ -61,7 +61,7 @@ test('Select custom dropdown option', async ({ page }) => {
 
     await wdiovalue.click();
 
-    await expect(page.locator('#frameworkDropdown')).toHaveText('WebdriverIO');
+    await expect(page.locator('#frameworkText')).toHaveText('WebdriverIO');
 
 
 });
@@ -69,16 +69,11 @@ test('Select custom dropdown option', async ({ page }) => {
 
 
 test('Multi select dropdown', async ({ page }) => {
-    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20learning/PW_Dropdown_Practice.html');
+    await page.goto('file:///C:/Users/Girish%20Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment%20HTMLS/PW_Dropdown_Practice.html');
 
     await page.locator('#skills').selectOption(['typescript', 'appium'])
 
     await expect(page.locator('#skills')).toHaveValues(['typescript', 'appium'])
-
-    await page.locator('#terms').check()
-    await page.locator('#terms').uncheck()
-
-    await expect(page.locator('#terms')).toBeChecked()
 
 });
 

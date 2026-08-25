@@ -39,7 +39,7 @@ expect:{
     screenshot: 'only-on-failure',
     video: 'on-first-retry',
     ignoreHTTPSErrors: true,
-    actionTimeout :1000,
+    actionTimeout: 10000,
 
     launchOptions: {
       // slowMo: 2000,

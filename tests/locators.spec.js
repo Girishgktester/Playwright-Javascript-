@@ -26,12 +26,6 @@ test('has title', async ({ page }) => {
   await page.getByTitle('nopCommerce demo store. Login')
 
 
-  await page.$('');
-
-  await page.locator('')
-
-
-
   //getbyrole
   //getbylable
   //getbyText

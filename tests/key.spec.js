@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-const htmlPath ='C:\\Users\\Girish Kulkarni\\OneDrive\\Desktop\\Playwright learning\\pw_mouse_actions.html';
+const htmlPath = 'C:/Users/Girish Kulkarni/OneDrive/Documents/Playwright-Javascript/Assignment HTMLS/pw_mouse_actions.html';
 
 test.describe('Keyboard Actions', () => {
 
