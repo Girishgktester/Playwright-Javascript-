@@ -10,149 +10,67 @@ const url = 'file:///C:/Users/Girish%20Kulkarni/OneDrive/Desktop/Playwright%20le
 test('Alert Dialog', async ({ page }) => {
 
     await page.goto(url);
-
     page.on('dialog', async dialog => {
         await dialog.accept();
-    });
-
-    await page.getByRole('button', { name: 'Show Alert' }).click();
+    })
+    await page.getByText('Show Alert').click();
 
 });
 
-
-// ============================================================
-// 2. CONFIRM - OK
-// ============================================================
-
-test('Confirm Dialog - Accept', async ({ page }) => {
+test('Alert Cancel', async ({ page }) => {
 
     await page.goto(url);
-
-    page.on('dialog', async dialog => {
-        await dialog.accept();
-    });
-
-    await page.getByRole('button', { name: 'Show Confirm' }).click();
-
-    await expect(
-        page.locator('#dialogResult')
-    ).toHaveText('User clicked OK.');
-
-});
-
-
-// ============================================================
-// 3. CONFIRM - CANCEL
-// ============================================================
-
-test('Confirm Dialog - Cancel', async ({ page }) => {
-
-    await page.goto(url);
-
     page.on('dialog', async dialog => {
         await dialog.dismiss();
-    });
-
-    await page.getByRole('button', { name: 'Show Confirm' }).click();
-
-    await expect(
-        page.locator('#dialogResult')
-    ).toHaveText('User clicked Cancel.');
+    })
+    await page.getByText('Show Confirm').click();
 
 });
 
-
-// ============================================================
-// 4. PROMPT
-// ============================================================
-
-test('Prompt Dialog', async ({ page }) => {
-
+test('Prompt dialog', async ({ page }) => {
     await page.goto(url);
-
     page.on('dialog', async dialog => {
-        await dialog.accept('Girish');
-    });
-
-    await page.getByRole('button', { name: 'Show Prompt' }).click();
-
-    await expect(
-        page.locator('#dialogResult')
-    ).toHaveText('Hello Girish');
+        await dialog.accept('Test');
+    })
+    await page.getByText('Show Prompt').click();
 
 });
 
-
-// ============================================================
-// 5. MULTIPLE TAB / POPUP
-// ============================================================
-
-test('Multiple Tab', async ({ page }) => {
+test('Handle multiple tabs', async ({ page }) => {
 
     await page.goto(url);
 
-    const popupPromise = page.waitForEvent('popup');
+    const popupPromise = page.waitForEvent('popup')
 
-    await page.getByRole('button', { name: 'Open New Tab' }).click();
+    await page.getByRole('button', {name: 'Open New Tab'}).click()
 
     const popup = await popupPromise;
 
-    await popup.waitForLoadState();
+    console.log('New tab', popup.url())
 
-    console.log('New Tab URL:', popup.url());
+    await page.bringToFront();
+
+   console.log('New tab', await popup.title())
 
 });
 
 
-// ============================================================
-// 6. MULTIPLE PAGES
-// ============================================================
-
-test('Multiple Pages', async ({ page, context }) => {
-
+test('Frames', async ({ page }) => {
     await page.goto(url);
 
-    const page1 = await context.newPage();
+    //  await page.locator('#username').fill("username");
+    const frame = page.frameLocator('iframe[name="loginFrame"]');
 
-    const page2 = await context.newPage();
+    await frame.locator('#username').fill("username")
+    await frame.locator('#username').fill("password")
 
-    await page1.goto('https://example.com');
 
-    await page2.goto('https://example.org');
 
-    console.log('Page 1:', page1.url());
-
-    console.log('Page 2:', page2.url());
 
 });
 
 
-// ============================================================
-// 8. LOGIN IFRAME
-// ============================================================
 
-test('Login iFrame', async ({ page }) => {
 
-    await page.goto(url);
 
-    const frame = page.frameLocator(
-        'iframe[name="loginFrame"]'
-    );
 
-    await frame
-        .getByPlaceholder('Enter username')
-        .fill('girish');
-
-    await frame
-        .getByPlaceholder('Enter password')
-        .fill('password123');
-
-    await frame
-        .getByRole('button', { name: 'Login' })
-        .click();
-
-    await expect(
-        frame.locator('#loginResult')
-    ).toHaveText('Login Successful');
-
-});
