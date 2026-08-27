@@ -42,7 +42,7 @@ expect:{
     actionTimeout: 10000,
 
     launchOptions: {
-      // slowMo: 2000,
+      slowMo: 2000,
       args: ['--start-maximized']
     },
   },
